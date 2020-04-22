@@ -31,6 +31,9 @@ li a {
     letter-spacing: 5px;
 }
 
+.timeline {
+    text-align: center;
+}
 
 .avatar {
     display: block;
