@@ -6,8 +6,6 @@
     list-style: none;
 }
 
-#chromeFix { display: block; position: absolute; width: 1px; height: 100%; top: 0px; left: 0px; }
-
 a {
     position: relative;
     outline: 0;
@@ -31,17 +29,18 @@ header .avatar{
     margin-right: auto;
 }
 
-.name{
-    position: relative;
-    font-family: 'Indie Flower', open-sans;
-    font-size: 30px;
-    letter-spacing: 5px;
+.contentarea{
     width: 15%;
     margin: auto;
     margin-top: 10px;
-    padding-bottom: 5px;
+}
+
+.name{
+    position: relative;
     border: solid #a2f9f1;
     border-radius: 33px;
+    font-size: 30px;
+    padding-bottom: 5px;
     text-align: center;
     background:linear-gradient(to right, #ebffff, #a2f9f1);
     animation: namechange 2.5s infinite;
