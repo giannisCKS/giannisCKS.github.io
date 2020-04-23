@@ -1,13 +1,7 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
 a {
+    position: relative;
     outline: 0;
 }
-
-
 
 .text {    
     font-family: 'Indie Flower', open-sans;
@@ -15,12 +9,10 @@ a {
     letter-spacing: 5px;
 }
 
-.avatar {
-    position: relative;
+header .avatar{
     display: block;
     border-style: solid;
     border-color: transparent;
-    border-width: 10%;
     border-radius: 100%;
     width: 250px;
     height: 250px;
@@ -30,13 +22,15 @@ a {
 }
 
 .name{
+    position: relative;
     font-family: 'Indie Flower', open-sans;
     font-size: 30px;
     letter-spacing: 5px;
     width: 15%;
     margin: auto;
     margin-top: 10px;
-    border: 2.5px solid #a2f9f1;
+    padding-bottom: 5px;
+    border: solid #a2f9f1;
     border-radius: 33px;
     text-align: center;
     background:linear-gradient(to right, #ebffff, #a2f9f1);
@@ -45,17 +39,17 @@ a {
     text-decoration: none;
 }
 
-ul {
+nav ul {
     list-style: none;
     margin: 0;
     text-align: center;
 }
 
-li {
+nav li {
     display: inline;
 }
 
-li a {
+nav li a {
     text-decoration: none;
     display: inline-block;
     padding: 50px;
@@ -64,6 +58,19 @@ li a {
 
 body {
     background:linear-gradient(to right, #d0fff8, azure );
+}
+
+.copyright{
+    color: white;
+    font-size: 15px;
+    padding-left: 10px;
+    padding-right: 5px;
+    background-color: black;
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
 }
 
 @keyframes namechange {
