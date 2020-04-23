@@ -1,3 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    list-style: none;
+}
+
+#chromeFix { display: block; position: absolute; width: 1px; height: 100%; top: 0px; left: 0px; }
+
 a {
     position: relative;
     outline: 0;
@@ -61,11 +71,11 @@ body {
 }
 
 .copyright{
-    color: white;
+    color: #FFFFFF;
     font-size: 15px;
     padding-left: 10px;
     padding-right: 5px;
-    background-color: black;
+    background-color: #000000;
 }
 
 footer{
