@@ -18,7 +18,7 @@ a {
 .avatar {
     display: block;
     border-style: solid;
-    border-color: #d0fff8;
+    border-color: #88edf2;
     border-width: 10px;
     width: 250px;
     height: 250px;
@@ -26,27 +26,28 @@ a {
     border-radius: 100%;
     margin-left: auto;
     margin-right: auto;
-    animation: borderchange 2.5s infinite;
 }
 
 .name{
-    font-family: 'Indie Flower', open-sans;
-    font-size: 33px;
-    letter-spacing: 5px;
-    margin-top: 1%;
     position: relative;
-    width: 10%;
-    left: 45%;
+    font-family: 'Indie Flower', open-sans;
+    font-size: 30px;
+    letter-spacing: 5px;
+    width: 15%;
+    left: 42%;
+    margin-top: 1%;
+    border-radius: 33px;
+    border: 2px solid #a2f9f1;
     text-align: center;
-    border-color: black;
-    background-color: black;
-    color: #FFF;
+    background:linear-gradient(to right, #ebffff, #a2f9f1);
+    animation: namechange 2.5s infinite;
+    animation: letters 5s infinite;
+    text-decoration: none;
 }
 
 ul {
     list-style: none;
     margin: 0;
-    padding: 150px;
     text-align: center;
 }
 
@@ -63,10 +64,13 @@ li a {
 
 body {
     background:linear-gradient(to right, #d0fff8, azure );
-    color: #FFF;
 }
 
-@keyframes borderchange {
-    40% {border-color: #88edf2;}
+@keyframes namechange {
+    40% {border-color: lightcyan;}
+}
+
+@keyframes letters {
+    50% {letter-spacing: 10px;}
 }
 
