@@ -12,7 +12,7 @@ a {
 }
 
 .text {    
-    font-family: 'Indie Flower', open-sans;
+    font-family: 'Roboto', sans-serif;
     font-size: 33px;
     letter-spacing: 5px;
 }
@@ -96,4 +96,28 @@ footer{
     50% { border-color: #d0fff8;}
     75% {border-color: #ebffff;}
     100% { border-color: #a2f9f1;}
+}
+
+#bio {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+#portfolio {
+    padding: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+#contact {
+    padding: 20px;
+    background-color: #d0d0d0;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 80%;
 }

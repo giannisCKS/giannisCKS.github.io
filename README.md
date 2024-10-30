@@ -1,2 +1,3 @@
 # giannisCKS.github.io
 
+This repository contains the source code for my personal website. The website has been upgraded to a modern design with a more sophisticated layout and styling. It now includes a brief bio, portfolio, and contact information sections. The font has been updated to 'Roboto' and the color scheme has been updated to include more modern and vibrant colors. The website also includes interactive elements and animations to enhance user experience. A modern CSS framework has been integrated to improve the design and responsiveness. The website now has a responsive design that adapts well to different screen sizes and devices.
