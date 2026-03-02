@@ -145,19 +145,19 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#080c18] text-slate-100 overflow-x-hidden">
+    <main className="min-h-screen bg-[#0a0a0a] text-neutral-100 overflow-x-hidden">
       {/* ── Navigation ── */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-[#080c18]/90 backdrop-blur-md border-b border-slate-800/60 shadow-2xl shadow-black/40"
+            ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-neutral-800/60 shadow-2xl shadow-black/40"
             : "bg-transparent"
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <a
             href="#"
-            className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent animate-shimmer"
+            className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent animate-shimmer"
           >
             GT
           </a>
@@ -168,10 +168,10 @@ export default function Home() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="relative text-slate-400 hover:text-white transition-colors duration-200 text-sm font-medium tracking-wide group"
+                  className="relative text-neutral-400 hover:text-white transition-colors duration-200 text-sm font-medium tracking-wide group"
                 >
                   {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-violet-400 to-cyan-400 group-hover:w-full transition-all duration-300" />
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-emerald-400 to-cyan-400 group-hover:w-full transition-all duration-300" />
                 </a>
               </li>
             ))}
@@ -180,7 +180,7 @@ export default function Home() {
                 href="https://github.com/giannisCKS"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-700 hover:border-violet-500 text-slate-400 hover:text-white text-sm font-medium transition-all duration-200 hover:bg-violet-500/10"
+                className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-neutral-700 hover:border-emerald-500 text-neutral-400 hover:text-white text-sm font-medium transition-all duration-200 hover:bg-emerald-500/10"
               >
                 <GitHubIcon className="w-4 h-4" />
                 GitHub
@@ -190,7 +190,7 @@ export default function Home() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden text-slate-400 hover:text-white transition-colors p-1"
+            className="md:hidden text-neutral-400 hover:text-white transition-colors p-1"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
@@ -223,16 +223,16 @@ export default function Home() {
         {/* Mobile menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            menuOpen ? "max-h-64 border-t border-slate-800" : "max-h-0"
+            menuOpen ? "max-h-64 border-t border-neutral-800" : "max-h-0"
           }`}
         >
-          <div className="bg-[#080c18]/95 backdrop-blur-md px-6 py-4">
+          <div className="bg-[#0a0a0a]/95 backdrop-blur-md px-6 py-4">
             <ul className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="text-slate-300 hover:text-white transition-colors text-sm font-medium"
+                    className="text-neutral-300 hover:text-white transition-colors text-sm font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
                     {link.label}
@@ -244,7 +244,7 @@ export default function Home() {
                   href="https://github.com/giannisCKS"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-slate-300 hover:text-white text-sm font-medium transition-colors"
+                  className="flex items-center gap-2 text-neutral-300 hover:text-white text-sm font-medium transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   <GitHubIcon className="w-4 h-4" />
@@ -262,9 +262,9 @@ export default function Home() {
         className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden"
       >
         {/* Background glow orbs */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-violet-600/20 blur-[120px] animate-float" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-emerald-600/20 blur-[120px] animate-float" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-cyan-600/20 blur-[120px] animate-float-delay" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-fuchsia-900/10 blur-[160px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-teal-900/10 blur-[160px]" />
 
         {/* Subtle grid */}
         <div
@@ -277,13 +277,13 @@ export default function Home() {
         />
 
         <div className="relative z-10 max-w-4xl animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold tracking-[0.2em] uppercase mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-[0.2em] uppercase mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Available for opportunities
           </div>
 
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-4 leading-tight tracking-tight">
-            <span className="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-400 bg-clip-text text-transparent animate-shimmer">
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-shimmer">
               Giannis
             </span>
             <br />
@@ -291,13 +291,13 @@ export default function Home() {
           </h1>
 
           <div className="h-10 flex items-center justify-center mb-8">
-            <p className="text-lg md:text-2xl text-slate-400 font-light">
+            <p className="text-lg md:text-2xl text-neutral-400 font-light">
               {typedText}
-              <span className="ml-0.5 text-violet-400 animate-blink">|</span>
+              <span className="ml-0.5 text-emerald-400 animate-blink">|</span>
             </p>
           </div>
 
-          <p className="text-slate-500 text-sm md:text-base max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-neutral-500 text-sm md:text-base max-w-xl mx-auto mb-10 leading-relaxed">
             Crafting scalable, high-quality software with clean architecture and
             attention to detail. Passionate about great user experiences.
           </p>
@@ -305,7 +305,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#projects"
-              className="group px-8 py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/40 hover:-translate-y-1 text-sm"
+              className="group px-8 py-3.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-1 text-sm"
             >
               View Projects
               <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
@@ -314,7 +314,7 @@ export default function Home() {
             </a>
             <a
               href="#contact"
-              className="px-8 py-3.5 rounded-full border border-slate-700 hover:border-violet-500/60 text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-violet-500/10 hover:-translate-y-1 text-sm"
+              className="px-8 py-3.5 rounded-full border border-neutral-700 hover:border-emerald-500/60 text-neutral-300 hover:text-white font-semibold transition-all duration-300 hover:bg-emerald-500/10 hover:-translate-y-1 text-sm"
             >
               Contact Me
             </a>
@@ -323,35 +323,35 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs text-slate-500 tracking-widest uppercase">
+          <span className="text-xs text-neutral-500 tracking-widest uppercase">
             Scroll
           </span>
-          <div className="w-px h-10 bg-gradient-to-b from-slate-500 to-transparent animate-pulse" />
+          <div className="w-px h-10 bg-gradient-to-b from-neutral-500 to-transparent animate-pulse" />
         </div>
       </section>
 
       {/* ── About ── */}
       <section id="about" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#080c18] via-slate-950/60 to-[#080c18]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-neutral-950/60 to-[#0a0a0a]" />
         <div className="max-w-5xl mx-auto relative z-10">
           <SectionHeading title="About Me" subtitle="Who I am & what I do" />
 
           <div className="grid md:grid-cols-5 gap-12 items-start mt-16">
             {/* Bio */}
             <div className="md:col-span-3 space-y-5 reveal">
-              <p className="text-slate-300 leading-relaxed text-[15px]">
+              <p className="text-neutral-300 leading-relaxed text-[15px]">
                 I&apos;m a passionate software developer with a strong
                 foundation in building scalable web applications and robust
                 backend systems. I thrive at the intersection of clean code,
                 thoughtful architecture, and great user experience.
               </p>
-              <p className="text-slate-400 leading-relaxed text-[15px]">
+              <p className="text-neutral-400 leading-relaxed text-[15px]">
                 With experience across the full stack, I enjoy turning complex
                 problems into elegant solutions. Whether it&apos;s crafting
                 pixel-perfect UIs or designing efficient APIs, I bring attention
                 to detail and a drive for excellence to every project.
               </p>
-              <p className="text-slate-400 leading-relaxed text-[15px]">
+              <p className="text-neutral-400 leading-relaxed text-[15px]">
                 When I&apos;m not coding, I&apos;m exploring new technologies,
                 contributing to open-source projects, and continuously
                 sharpening my skills.
@@ -362,7 +362,7 @@ export default function Home() {
                   href="https://github.com/giannisCKS"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 text-sm font-medium transition-colors group"
+                  className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium transition-colors group"
                 >
                   View my GitHub profile
                   <span className="transition-transform group-hover:translate-x-1">
@@ -377,15 +377,15 @@ export default function Home() {
               {skills.map((skill, i) => (
                 <div
                   key={skill.label}
-                  className={`reveal reveal-delay-${i + 1} group bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-2xl p-5 hover:border-violet-500/40 hover:bg-slate-900/80 transition-all duration-300`}
+                  className={`reveal reveal-delay-${i + 1} group bg-neutral-900/60 backdrop-blur-sm border border-neutral-800 rounded-2xl p-5 hover:border-emerald-500/40 hover:bg-neutral-900/80 transition-all duration-300`}
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xl">{skill.icon}</span>
-                    <p className="text-violet-300 text-xs font-bold uppercase tracking-wider">
+                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider">
                       {skill.label}
                     </p>
                   </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">
+                  <p className="text-neutral-300 text-sm leading-relaxed">
                     {skill.value}
                   </p>
                 </div>
@@ -397,8 +397,8 @@ export default function Home() {
 
       {/* ── Projects ── */}
       <section id="projects" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#080c18] to-slate-950/80" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] to-neutral-950/80" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
         <div className="max-w-6xl mx-auto relative z-10">
           <SectionHeading title="Projects" subtitle="Things I've built" />
@@ -407,22 +407,22 @@ export default function Home() {
             {projects.map((project, i) => (
               <div
                 key={project.title}
-                className={`reveal reveal-delay-${i + 1} group relative bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-7 flex flex-col hover:border-violet-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-violet-900/30`}
+                className={`reveal reveal-delay-${i + 1} group relative bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-3xl p-7 flex flex-col hover:border-emerald-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/30`}
               >
                 {/* Glow on hover */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-600/0 to-cyan-600/0 group-hover:from-violet-600/5 group-hover:to-cyan-600/5 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-600/0 to-cyan-600/0 group-hover:from-emerald-600/5 group-hover:to-cyan-600/5 transition-all duration-500" />
 
                 <div className="relative flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600/30 to-fuchsia-600/30 border border-violet-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600/30 to-teal-600/30 border border-emerald-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
                     <span className="text-lg">
                       {PROJECT_ICONS[i % PROJECT_ICONS.length]}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white mb-3 group-hover:text-violet-300 transition-colors duration-200">
+                  <h3 className="text-base font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors duration-200">
                     {project.title}
                   </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-5">
+                  <p className="text-neutral-400 text-sm leading-relaxed mb-5">
                     {project.description}
                   </p>
 
@@ -430,7 +430,7 @@ export default function Home() {
                     {project.tech.map((t) => (
                       <span
                         key={t}
-                        className="px-2.5 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg font-medium group-hover:border-violet-700/50 group-hover:text-violet-300 transition-colors duration-300"
+                        className="px-2.5 py-0.5 bg-neutral-800 border border-neutral-700 text-neutral-300 text-xs rounded-lg font-medium group-hover:border-emerald-700/50 group-hover:text-emerald-300 transition-colors duration-300"
                       >
                         {t}
                       </span>
@@ -438,12 +438,12 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative flex gap-4 pt-5 border-t border-slate-800 group-hover:border-slate-700 transition-colors">
+                <div className="relative flex gap-4 pt-5 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
                   <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-slate-400 hover:text-violet-400 text-sm font-medium transition-colors"
+                    className="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 text-sm font-medium transition-colors"
                   >
                     <GitHubIcon className="w-4 h-4" />
                     View Code
@@ -453,7 +453,7 @@ export default function Home() {
                       href={project.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 text-sm font-medium transition-colors"
                     >
                       <svg
                         className="w-4 h-4"
@@ -480,13 +480,13 @@ export default function Home() {
 
       {/* ── Contact ── */}
       <section id="contact" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 to-[#080c18]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/80 to-[#0a0a0a]" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
 
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <SectionHeading title="Get In Touch" subtitle="Let's work together" />
 
-          <p className="text-slate-400 mt-8 mb-12 leading-relaxed text-[15px] reveal">
+          <p className="text-neutral-400 mt-8 mb-12 leading-relaxed text-[15px] reveal">
             I&apos;m always open to new opportunities, collaborations, and
             interesting conversations. Whether you have a project in mind or
             just want to say hi — feel free to reach out!
@@ -499,9 +499,9 @@ export default function Home() {
               external
               label="GitHub"
               description="@giannisCKS"
-              color="from-slate-700 to-slate-600"
-              hoverBorder="hover:border-violet-500/50"
-              hoverText="group-hover:text-violet-400"
+              color="from-neutral-700 to-neutral-600"
+              hoverBorder="hover:border-emerald-500/50"
+              hoverText="group-hover:text-emerald-400"
               icon={<GitHubIcon className="w-6 h-6" />}
             />
 
@@ -555,14 +555,14 @@ export default function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-10 px-6 border-t border-slate-800/60 bg-[#080c18]">
+      <footer className="py-10 px-6 border-t border-neutral-800/60 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-slate-500 text-sm">
+          <p className="text-neutral-500 text-sm">
             © {new Date().getFullYear()} Giannis Papakostas. All rights
             reserved.
           </p>
-          <p className="text-slate-600 text-xs">
-            Built with <span className="text-violet-400/70">Next.js</span>
+          <p className="text-neutral-600 text-xs">
+            Built with <span className="text-emerald-400/70">Next.js</span>
             {" & "}
             <span className="text-cyan-400/70">Tailwind CSS</span>
           </p>
@@ -584,14 +584,14 @@ function SectionHeading({
   return (
     <div className="text-center reveal">
       {subtitle && (
-        <p className="text-violet-400 text-xs font-bold tracking-[0.25em] uppercase mb-3">
+        <p className="text-emerald-400 text-xs font-bold tracking-[0.25em] uppercase mb-3">
           {subtitle}
         </p>
       )}
       <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
         {title}
       </h2>
-      <div className="mt-4 mx-auto w-12 h-0.5 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
+      <div className="mt-4 mx-auto w-12 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400" />
     </div>
   );
 }
@@ -622,20 +622,20 @@ function ContactCard({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`group flex flex-col items-center gap-3 p-6 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-2xl ${hoverBorder} hover:-translate-y-1 transition-all duration-300`}
+      className={`group flex flex-col items-center gap-3 p-6 bg-neutral-900/60 backdrop-blur-sm border border-neutral-800 rounded-2xl ${hoverBorder} hover:-translate-y-1 transition-all duration-300`}
     >
       <div
-        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-slate-300 ${hoverText} transition-colors duration-300`}
+        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-neutral-300 ${hoverText} transition-colors duration-300`}
       >
         {icon}
       </div>
       <div className="text-center">
         <p
-          className={`text-sm font-semibold text-slate-200 ${hoverText} transition-colors duration-300`}
+          className={`text-sm font-semibold text-neutral-200 ${hoverText} transition-colors duration-300`}
         >
           {label}
         </p>
-        <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+        <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
       </div>
     </a>
   );
