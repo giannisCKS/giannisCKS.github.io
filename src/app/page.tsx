@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import ParticlesBackground from "./ParticlesBackground";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -37,13 +39,11 @@ const projects: {
   },
 ];
 
-const PROJECT_ICONS = ["🌐", "🐳", "🤖"];
-
 const skills = [
-  { label: "Languages", value: "TypeScript · Python · Go", icon: "💻" },
-  { label: "Frontend", value: "React · Next.js · Tailwind CSS", icon: "🎨" },
-  { label: "Backend", value: "Node.js · FastAPI · REST APIs", icon: "⚙️" },
-  { label: "DevOps", value: "Docker · Kubernetes · CI/CD", icon: "🚀" },
+  { label: "Languages", value: "TypeScript, Python, Go, JavaScript" },
+  { label: "Frontend", value: "React, Next.js, Tailwind CSS, HTML/CSS" },
+  { label: "Backend", value: "Node.js, FastAPI, REST APIs, GraphQL" },
+  { label: "DevOps", value: "Docker, Kubernetes, CI/CD, AWS" },
 ];
 
 const navLinks = [
@@ -52,68 +52,28 @@ const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
-const TYPING_PHRASES = [
-  "Software Developer",
-  "Full-Stack Engineer",
-  "Open Source Enthusiast",
-];
+// ─── Animations ───────────────────────────────────────────────────────────────
 
-// ─── Typing animation hook ────────────────────────────────────────────────────
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.5
+    } 
+  }
+};
 
-function useTypingAnimation(phrases: string[], speed = 80, pause = 1800) {
-  const [displayed, setDisplayed] = useState("");
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    const current = phrases[phraseIdx];
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (!deleting && displayed.length < current.length) {
-      timeout = setTimeout(
-        () => setDisplayed(current.slice(0, displayed.length + 1)),
-        speed,
-      );
-    } else if (!deleting && displayed.length === current.length) {
-      timeout = setTimeout(() => setDeleting(true), pause);
-    } else if (deleting && displayed.length > 0) {
-      timeout = setTimeout(
-        () => setDisplayed(displayed.slice(0, -1)),
-        speed / 2,
-      );
-    } else {
-      timeout = setTimeout(() => {
-        setDeleting(false);
-        setPhraseIdx((i) => (i + 1) % phrases.length);
-      }, speed);
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
     }
-
-    return () => clearTimeout(timeout);
-  }, [displayed, deleting, phraseIdx, phrases, speed, pause]);
-
-  return displayed;
-}
-
-// ─── Scroll-reveal hook ───────────────────────────────────────────────────────
-
-function useRevealOnScroll() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.12 },
-    );
-
-    const elements = document.querySelectorAll(".reveal");
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-}
+  }
+};
 
 // ─── GitHub SVG ───────────────────────────────────────────────────────────────
 
@@ -130,15 +90,11 @@ function GitHubIcon({ className }: { className?: string }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Navbar component ───────────────────────────────────────────────────────────
 
-export default function Home() {
+function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const typedText = useTypingAnimation(TYPING_PHRASES);
-  useRevealOnScroll();
-
-  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -147,33 +103,97 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-neutral-100 overflow-x-hidden">
-      {/* ── Navigation ── */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-neutral-800/60 shadow-2xl shadow-black/40"
-            : "bg-transparent"
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-white/70 backdrop-blur-md border-b border-gray-200 shadow-sm py-3"
+          : "bg-transparent py-5"
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <a
+          href="#"
+          className="text-xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors"
+        >
+          Giannis Papakostas
+        </a>
+
+        {/* Desktop nav */}
+        <ul className="hidden md:flex gap-8 items-center">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm font-medium"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="https://github.com/giannisCKS"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium transition-colors"
+            >
+              <GitHubIcon className="w-4 h-4" />
+              GitHub
+            </a>
+          </li>
+        </ul>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden text-gray-600 hover:text-gray-900 transition-colors p-1"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {menuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ${
+          menuOpen ? "max-h-64 border-t border-gray-200" : "max-h-0"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a
-            href="#"
-            className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent animate-shimmer"
-          >
-            Giannis Papakostas
-          </a>
-
-          {/* Desktop nav */}
-          <ul className="hidden md:flex gap-8 items-center">
+        <div className="bg-white px-6 py-4">
+          <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="relative text-neutral-400 hover:text-white transition-colors duration-200 text-sm font-medium tracking-wide group"
+                  className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium"
+                  onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-emerald-400 to-cyan-400 group-hover:w-full transition-all duration-300" />
                 </a>
               </li>
             ))}
@@ -182,178 +202,101 @@ export default function Home() {
                 href="https://github.com/giannisCKS"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-neutral-700 hover:border-emerald-500 text-neutral-400 hover:text-white text-sm font-medium transition-all duration-200 hover:bg-emerald-500/10"
+                className="flex items-center gap-2 text-gray-900 hover:text-blue-600 text-sm font-medium transition-colors"
+                onClick={() => setMenuOpen(false)}
               >
                 <GitHubIcon className="w-4 h-4" />
                 GitHub
               </a>
             </li>
           </ul>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-neutral-400 hover:text-white transition-colors p-1"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
         </div>
+      </div>
+    </motion.nav>
+  );
+}
 
-        {/* Mobile menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ${
-            menuOpen ? "max-h-64 border-t border-neutral-800" : "max-h-0"
-          }`}
-        >
-          <div className="bg-[#0a0a0a]/95 backdrop-blur-md px-6 py-4">
-            <ul className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-neutral-300 hover:text-white transition-colors text-sm font-medium"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a
-                  href="https://github.com/giannisCKS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-neutral-300 hover:text-white text-sm font-medium transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <GitHubIcon className="w-4 h-4" />
-                  GitHub
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+// ─── Main component ───────────────────────────────────────────────────────────
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-transparent text-gray-900 overflow-x-hidden relative">
+      <ParticlesBackground />
+      {/* ── Navigation ── */}
+      <Navbar />
 
       {/* ── Hero ── */}
       <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden"
+        className="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20 pb-16"
       >
-        {/* Background glow orbs */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-emerald-600/20 blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-cyan-600/20 blur-[120px] animate-float-delay" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-teal-900/10 blur-[160px]" />
-
-        {/* Subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <div className="relative z-10 max-w-4xl animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold tracking-[0.2em] uppercase mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <motion.div 
+          className="max-w-4xl"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold uppercase mb-8">
+            <span className="w-2 h-2 rounded-full bg-blue-500" />
             Available for opportunities
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-4 leading-tight tracking-tight">
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-shimmer">
-              Giannis
-            </span>
-            <br />
-            <span className="text-white">Papakostas</span>
-          </h1>
+          <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900">
+            Giannis Papakostas
+          </motion.h1>
 
-          <div className="h-10 flex items-center justify-center mb-8">
-            <p className="text-lg md:text-2xl text-neutral-400 font-light">
-              {typedText}
-              <span className="ml-0.5 text-emerald-400 animate-blink">|</span>
-            </p>
-          </div>
+          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-gray-600 font-medium mb-6">
+            Software Developer & Full-Stack Engineer
+          </motion.p>
 
-          <p className="text-neutral-500 text-sm md:text-base max-w-xl mx-auto mb-10 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
             Crafting scalable, high-quality software with clean architecture and
             attention to detail. Passionate about great user experiences.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#projects"
-              className="group px-8 py-3.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-1 text-sm"
+              className="px-8 py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors text-sm"
             >
               View Projects
-              <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
-                →
-              </span>
             </a>
             <a
               href="#contact"
-              className="px-8 py-3.5 rounded-full border border-neutral-700 hover:border-emerald-500/60 text-neutral-300 hover:text-white font-semibold transition-all duration-300 hover:bg-emerald-500/10 hover:-translate-y-1 text-sm"
+              className="px-8 py-3 rounded-md border border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50 font-semibold transition-all text-sm"
             >
               Contact Me
             </a>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs text-neutral-500 tracking-widest uppercase">
-            Scroll
-          </span>
-          <div className="w-px h-10 bg-gradient-to-b from-neutral-500 to-transparent animate-pulse" />
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── About ── */}
-      <section id="about" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-neutral-950/60 to-[#0a0a0a]" />
-        <div className="max-w-5xl mx-auto relative z-10">
-          <SectionHeading title="About Me" subtitle="Who I am & what I do" />
+      <section id="about" className="py-20 px-6 bg-transparent">
+        <motion.div 
+          className="max-w-6xl mx-auto"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={staggerContainer}
+        >
+          <SectionHeading title="About Me" subtitle="Professional Background" />
 
           <div className="grid md:grid-cols-5 gap-12 items-start mt-16">
             {/* Bio */}
-            <div className="md:col-span-3 space-y-5 reveal">
-              <p className="text-neutral-300 leading-relaxed text-[15px]">
+            <motion.div variants={fadeUp} className="md:col-span-3 space-y-5">
+              <p className="text-gray-700 leading-relaxed text-base">
                 I&apos;m a passionate software developer with a strong
                 foundation in building scalable web applications and robust
                 backend systems. I thrive at the intersection of clean code,
                 thoughtful architecture, and great user experience.
               </p>
-              <p className="text-neutral-400 leading-relaxed text-[15px]">
+              <p className="text-gray-600 leading-relaxed text-base">
                 With experience across the full stack, I enjoy turning complex
                 problems into elegant solutions. Whether it&apos;s crafting
                 pixel-perfect UIs or designing efficient APIs, I bring attention
                 to detail and a drive for excellence to every project.
               </p>
-              <p className="text-neutral-400 leading-relaxed text-[15px]">
+              <p className="text-gray-600 leading-relaxed text-base">
                 When I&apos;m not coding, I&apos;m exploring new technologies,
                 contributing to open-source projects, and continuously
                 sharpening my skills.
@@ -364,67 +307,58 @@ export default function Home() {
                   href="https://github.com/giannisCKS"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium transition-colors group"
+                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
                 >
-                  View my GitHub profile
-                  <span className="transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
+                  View my GitHub profile →
                 </a>
               </div>
-            </div>
+            </motion.div>
 
             {/* Skills grid */}
-            <div className="md:col-span-2 grid grid-cols-1 gap-4">
-              {skills.map((skill, i) => (
-                <div
+            <motion.div variants={staggerContainer} className="md:col-span-2 space-y-6">
+              {skills.map((skill) => (
+                <motion.div
                   key={skill.label}
-                  className={`reveal reveal-delay-${i + 1} group bg-neutral-900/60 backdrop-blur-sm border border-neutral-800 rounded-2xl p-5 hover:border-emerald-500/40 hover:bg-neutral-900/80 transition-all duration-300`}
+                  variants={fadeUp}
+                  className="bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:shadow-sm transition-all"
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xl">{skill.icon}</span>
-                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider">
-                      {skill.label}
-                    </p>
-                  </div>
-                  <p className="text-neutral-300 text-sm leading-relaxed">
+                  <p className="text-blue-600 text-sm font-bold uppercase tracking-wide mb-2">
+                    {skill.label}
+                  </p>
+                  <p className="text-gray-700 text-sm leading-relaxed">
                     {skill.value}
                   </p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── Projects ── */}
-      <section id="projects" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] to-neutral-950/80" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+      <section id="projects" className="py-20 px-6 bg-transparent">
+        <motion.div 
+          className="max-w-6xl mx-auto"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={staggerContainer}
+        >
+          <SectionHeading title="Projects" subtitle="Featured Work" />
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <SectionHeading title="Projects" subtitle="Things I've built" />
-
-          <div className="grid md:grid-cols-3 gap-6 mt-16">
-            {projects.map((project, i) => (
-              <div
+          <motion.div variants={staggerContainer} className="grid md:grid-cols-3 gap-6 mt-16">
+            {projects.map((project) => (
+              <motion.div
                 key={project.title}
-                className={`reveal reveal-delay-${i + 1} group relative bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-3xl p-7 flex flex-col hover:border-emerald-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/30`}
+                variants={fadeUp}
+                whileHover={{ y: -5 }}
+                className="bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg p-6 flex flex-col hover:border-blue-300 hover:shadow-md transition-all"
               >
-                {/* Glow on hover */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-600/0 to-cyan-600/0 group-hover:from-emerald-600/5 group-hover:to-cyan-600/5 transition-all duration-500" />
-
-                <div className="relative flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600/30 to-teal-600/30 border border-emerald-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-lg">
-                      {PROJECT_ICONS[i % PROJECT_ICONS.length]}
-                    </span>
-                  </div>
-
-                  <h3 className="text-base font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors duration-200">
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
                     {project.title}
                   </h3>
-                  <p className="text-neutral-400 text-sm leading-relaxed mb-5">
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5">
                     {project.description}
                   </p>
 
@@ -432,7 +366,7 @@ export default function Home() {
                     {project.tech.map((t) => (
                       <span
                         key={t}
-                        className="px-2.5 py-0.5 bg-neutral-800 border border-neutral-700 text-neutral-300 text-xs rounded-lg font-medium group-hover:border-emerald-700/50 group-hover:text-emerald-300 transition-colors duration-300"
+                        className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-md font-medium"
                       >
                         {t}
                       </span>
@@ -440,12 +374,12 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative flex gap-4 pt-5 border-t border-neutral-800 group-hover:border-neutral-700 transition-colors">
+                <div className="flex gap-4 pt-4 border-t border-gray-100">
                   <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 text-sm font-medium transition-colors"
+                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
                   >
                     <GitHubIcon className="w-4 h-4" />
                     View Code
@@ -455,7 +389,7 @@ export default function Home() {
                       href={project.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
                     >
                       <svg
                         className="w-4 h-4"
@@ -474,37 +408,40 @@ export default function Home() {
                     </a>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── Contact ── */}
-      <section id="contact" className="py-28 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/80 to-[#0a0a0a]" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+      <section id="contact" className="py-20 px-6 bg-transparent">
+        <motion.div 
+          className="max-w-4xl mx-auto text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={staggerContainer}
+        >
+          <motion.div variants={fadeUp}>
+            <SectionHeading title="Get In Touch" subtitle="Contact Information" />
 
-        <div className="max-w-2xl mx-auto text-center relative z-10">
-          <SectionHeading title="Get In Touch" subtitle="Let's work together" />
+            <p className="text-gray-600 mt-8 mb-12 leading-relaxed text-base">
+              I&apos;m always open to new opportunities, collaborations, and
+              interesting conversations. Whether you have a project in mind or
+              just want to say hi — feel free to reach out!
+            </p>
+          </motion.div>
 
-          <p className="text-neutral-400 mt-8 mb-12 leading-relaxed text-[15px] reveal">
-            I&apos;m always open to new opportunities, collaborations, and
-            interesting conversations. Whether you have a project in mind or
-            just want to say hi — feel free to reach out!
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-4 reveal">
+          <motion.div variants={staggerContainer} className="grid sm:grid-cols-3 gap-4">
             {/* GitHub */}
             <ContactCard
               href="https://github.com/giannisCKS"
               external
               label="GitHub"
               description="@giannisCKS"
-              color="from-neutral-700 to-neutral-600"
-              hoverBorder="hover:border-emerald-500/50"
-              hoverText="group-hover:text-emerald-400"
               icon={<GitHubIcon className="w-6 h-6" />}
+              variants={fadeUp}
             />
 
             {/* Email */}
@@ -513,9 +450,6 @@ export default function Home() {
               external={false}
               label="Email"
               description="Send a message"
-              color="from-cyan-800 to-cyan-700"
-              hoverBorder="hover:border-cyan-500/50"
-              hoverText="group-hover:text-cyan-400"
               icon={
                 <svg
                   className="w-6 h-6"
@@ -531,6 +465,7 @@ export default function Home() {
                   />
                 </svg>
               }
+              variants={fadeUp}
             />
 
             {/* LinkedIn */}
@@ -539,9 +474,6 @@ export default function Home() {
               external
               label="LinkedIn"
               description="Connect with me"
-              color="from-blue-800 to-blue-700"
-              hoverBorder="hover:border-blue-500/50"
-              hoverText="group-hover:text-blue-400"
               icon={
                 <svg
                   className="w-6 h-6"
@@ -551,22 +483,21 @@ export default function Home() {
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
               }
+              variants={fadeUp}
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-10 px-6 border-t border-neutral-800/60 bg-[#0a0a0a]">
+      <footer className="py-8 px-6 border-t border-gray-200 bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-neutral-500 text-sm">
+          <p className="text-gray-600 text-sm">
             © {new Date().getFullYear()} Giannis Papakostas. All rights
             reserved.
           </p>
-          <p className="text-neutral-600 text-xs">
-            Built with <span className="text-emerald-400/70">Next.js</span>
-            {" & "}
-            <span className="text-cyan-400/70">Tailwind CSS</span>
+          <p className="text-gray-500 text-xs">
+            Built with Next.js & Tailwind CSS
           </p>
         </div>
       </footer>
@@ -584,16 +515,15 @@ function SectionHeading({
   subtitle?: string;
 }) {
   return (
-    <div className="text-center reveal">
+    <div className="text-center">
       {subtitle && (
-        <p className="text-emerald-400 text-xs font-bold tracking-[0.25em] uppercase mb-3">
+        <motion.p variants={fadeUp} className="text-blue-600 text-sm font-semibold uppercase tracking-wide mb-3">
           {subtitle}
-        </p>
+        </motion.p>
       )}
-      <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+      <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-gray-900">
         {title}
-      </h2>
-      <div className="mt-4 mx-auto w-12 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400" />
+      </motion.h2>
     </div>
   );
 }
@@ -605,40 +535,34 @@ function ContactCard({
   external,
   label,
   description,
-  color,
-  hoverBorder,
-  hoverText,
   icon,
+  variants,
 }: {
   href: string;
   external: boolean;
   label: string;
   description: string;
-  color: string;
-  hoverBorder: string;
-  hoverText: string;
   icon: React.ReactNode;
+  variants?: any;
 }) {
   return (
-    <a
+    <motion.a
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`group flex flex-col items-center gap-3 p-6 bg-neutral-900/60 backdrop-blur-sm border border-neutral-800 rounded-2xl ${hoverBorder} hover:-translate-y-1 transition-all duration-300`}
+      variants={variants}
+      whileHover={{ y: -5 }}
+      className="flex flex-col items-center gap-3 p-6 bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all"
     >
-      <div
-        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-neutral-300 ${hoverText} transition-colors duration-300`}
-      >
+      <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-700 transition-colors">
         {icon}
       </div>
       <div className="text-center">
-        <p
-          className={`text-sm font-semibold text-neutral-200 ${hoverText} transition-colors duration-300`}
-        >
+        <p className="text-sm font-semibold text-gray-900">
           {label}
         </p>
-        <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
+        <p className="text-xs text-gray-600 mt-1">{description}</p>
       </div>
-    </a>
+    </motion.a>
   );
 }
