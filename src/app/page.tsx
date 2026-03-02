@@ -70,11 +70,17 @@ function useTypingAnimation(phrases: string[], speed = 80, pause = 1800) {
     let timeout: ReturnType<typeof setTimeout>;
 
     if (!deleting && displayed.length < current.length) {
-      timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), speed);
+      timeout = setTimeout(
+        () => setDisplayed(current.slice(0, displayed.length + 1)),
+        speed,
+      );
     } else if (!deleting && displayed.length === current.length) {
       timeout = setTimeout(() => setDeleting(true), pause);
     } else if (deleting && displayed.length > 0) {
-      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), speed / 2);
+      timeout = setTimeout(
+        () => setDisplayed(displayed.slice(0, -1)),
+        speed / 2,
+      );
     } else {
       setDeleting(false);
       setPhraseIdx((i) => (i + 1) % phrases.length);
@@ -98,7 +104,7 @@ function useRevealOnScroll() {
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
 
     const elements = document.querySelectorAll(".reveal");
@@ -111,7 +117,12 @@ function useRevealOnScroll() {
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
       <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
     </svg>
   );
@@ -135,7 +146,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#080c18] text-slate-100 overflow-x-hidden">
-
       {/* ── Navigation ── */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -185,11 +195,26 @@ export default function Home() {
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>
@@ -262,7 +287,7 @@ export default function Home() {
               Giannis
             </span>
             <br />
-            <span className="text-white">Tsiamakis</span>
+            <span className="text-white">Papakostas</span>
           </h1>
 
           <div className="h-10 flex items-center justify-center mb-8">
@@ -283,7 +308,9 @@ export default function Home() {
               className="group px-8 py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/40 hover:-translate-y-1 text-sm"
             >
               View Projects
-              <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">→</span>
+              <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </a>
             <a
               href="#contact"
@@ -296,7 +323,9 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs text-slate-500 tracking-widest uppercase">Scroll</span>
+          <span className="text-xs text-slate-500 tracking-widest uppercase">
+            Scroll
+          </span>
           <div className="w-px h-10 bg-gradient-to-b from-slate-500 to-transparent animate-pulse" />
         </div>
       </section>
@@ -311,20 +340,21 @@ export default function Home() {
             {/* Bio */}
             <div className="md:col-span-3 space-y-5 reveal">
               <p className="text-slate-300 leading-relaxed text-[15px]">
-                I&apos;m a passionate software developer with a strong foundation in building
-                scalable web applications and robust backend systems. I thrive at the
-                intersection of clean code, thoughtful architecture, and great user
-                experience.
+                I&apos;m a passionate software developer with a strong
+                foundation in building scalable web applications and robust
+                backend systems. I thrive at the intersection of clean code,
+                thoughtful architecture, and great user experience.
               </p>
               <p className="text-slate-400 leading-relaxed text-[15px]">
-                With experience across the full stack, I enjoy turning complex problems into
-                elegant solutions. Whether it&apos;s crafting pixel-perfect UIs or designing
-                efficient APIs, I bring attention to detail and a drive for excellence to
-                every project.
+                With experience across the full stack, I enjoy turning complex
+                problems into elegant solutions. Whether it&apos;s crafting
+                pixel-perfect UIs or designing efficient APIs, I bring attention
+                to detail and a drive for excellence to every project.
               </p>
               <p className="text-slate-400 leading-relaxed text-[15px]">
-                When I&apos;m not coding, I&apos;m exploring new technologies, contributing to
-                open-source projects, and continuously sharpening my skills.
+                When I&apos;m not coding, I&apos;m exploring new technologies,
+                contributing to open-source projects, and continuously
+                sharpening my skills.
               </p>
 
               <div className="pt-4">
@@ -335,7 +365,9 @@ export default function Home() {
                   className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 text-sm font-medium transition-colors group"
                 >
                   View my GitHub profile
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
                 </a>
               </div>
             </div>
@@ -353,7 +385,9 @@ export default function Home() {
                       {skill.label}
                     </p>
                   </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">{skill.value}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    {skill.value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -421,8 +455,18 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 text-sm font-medium transition-colors"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
                       </svg>
                       Live Demo
                     </a>
@@ -443,9 +487,9 @@ export default function Home() {
           <SectionHeading title="Get In Touch" subtitle="Let's work together" />
 
           <p className="text-slate-400 mt-8 mb-12 leading-relaxed text-[15px] reveal">
-            I&apos;m always open to new opportunities, collaborations, and interesting
-            conversations. Whether you have a project in mind or just want to say hi —
-            feel free to reach out!
+            I&apos;m always open to new opportunities, collaborations, and
+            interesting conversations. Whether you have a project in mind or
+            just want to say hi — feel free to reach out!
           </p>
 
           <div className="grid sm:grid-cols-3 gap-4 reveal">
@@ -471,8 +515,18 @@ export default function Home() {
               hoverBorder="hover:border-cyan-500/50"
               hoverText="group-hover:text-cyan-400"
               icon={
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               }
             />
@@ -487,7 +541,11 @@ export default function Home() {
               hoverBorder="hover:border-blue-500/50"
               hoverText="group-hover:text-blue-400"
               icon={
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
               }
@@ -500,11 +558,11 @@ export default function Home() {
       <footer className="py-10 px-6 border-t border-slate-800/60 bg-[#080c18]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-500 text-sm">
-            © {new Date().getFullYear()} Giannis Tsiamakis. All rights reserved.
+            © {new Date().getFullYear()} Giannis Papakostas. All rights
+            reserved.
           </p>
           <p className="text-slate-600 text-xs">
-            Built with{" "}
-            <span className="text-violet-400/70">Next.js</span>
+            Built with <span className="text-violet-400/70">Next.js</span>
             {" & "}
             <span className="text-cyan-400/70">Tailwind CSS</span>
           </p>
@@ -516,7 +574,13 @@ export default function Home() {
 
 // ─── Section heading component ────────────────────────────────────────────────
 
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionHeading({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
   return (
     <div className="text-center reveal">
       {subtitle && (
@@ -560,11 +624,15 @@ function ContactCard({
       rel={external ? "noopener noreferrer" : undefined}
       className={`group flex flex-col items-center gap-3 p-6 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-2xl ${hoverBorder} hover:-translate-y-1 transition-all duration-300`}
     >
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-slate-300 ${hoverText} transition-colors duration-300`}>
+      <div
+        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-slate-300 ${hoverText} transition-colors duration-300`}
+      >
         {icon}
       </div>
       <div className="text-center">
-        <p className={`text-sm font-semibold text-slate-200 ${hoverText} transition-colors duration-300`}>
+        <p
+          className={`text-sm font-semibold text-slate-200 ${hoverText} transition-colors duration-300`}
+        >
           {label}
         </p>
         <p className="text-xs text-slate-500 mt-0.5">{description}</p>

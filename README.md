@@ -1,6 +1,6 @@
 # giannisCKS.github.io
 
-Personal portfolio website of **Giannis Tsiamakis** — Software Developer & Engineer.
+Personal portfolio website of **Giannis Papakostas** — Software Developer & Engineer.
 
 Live at: [giannisCKS.github.io](https://giannisCKS.github.io)
 
@@ -47,4 +47,3 @@ src/app/
   workflows/
     deploy.yml  ← GitHub Actions deployment workflow
 ```
-
