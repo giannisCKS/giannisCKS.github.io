@@ -82,8 +82,10 @@ function useTypingAnimation(phrases: string[], speed = 80, pause = 1800) {
         speed / 2,
       );
     } else {
-      setDeleting(false);
-      setPhraseIdx((i) => (i + 1) % phrases.length);
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setPhraseIdx((i) => (i + 1) % phrases.length);
+      }, speed);
     }
 
     return () => clearTimeout(timeout);
