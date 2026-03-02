@@ -14,12 +14,12 @@ const projects: {
   demo: string | null;
 }[] = [
   {
-    title: "Project Alpha",
+    title: "Dancefolklore.gr",
     description:
-      "A full-stack web application featuring real-time data, user authentication, and a responsive dashboard.",
-    tech: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind CSS"],
-    github: "https://github.com/giannisCKS",
-    demo: null,
+      "A specialized Greek web platform dedicated to documenting Greek traditional dance, costumes, and folklore.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
+    github: "https://github.com/raptisfolklore/dancefolklore",
+    demo: "https://dancefolklore.gr",
   },
   {
     title: "Project Beta",
