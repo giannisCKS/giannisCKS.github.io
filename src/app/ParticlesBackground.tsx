@@ -9,6 +9,7 @@ interface CommitData {
   message: string;
   project: string;
   color: string;
+  private: boolean;
 }
 
 interface HoveredNode {
@@ -17,7 +18,11 @@ interface HoveredNode {
   y: number;
 }
 
-export default function ParticlesBackground() {
+interface ParticlesProps {
+  activeProject?: string | null;
+}
+
+export default function ParticlesBackground({ activeProject }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
 
@@ -30,6 +35,7 @@ export default function ParticlesBackground() {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
+    let pulseAngle = 0;
 
     const mouse = {
       x: -1000,
@@ -37,7 +43,6 @@ export default function ParticlesBackground() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Check if mouse is over a glass box
       const target = e.target as HTMLElement;
       if (target && target.closest("[data-glass='true']")) {
         mouse.x = -1000;
@@ -45,7 +50,6 @@ export default function ParticlesBackground() {
         setHoveredNode(null);
         return;
       }
-      
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
@@ -84,15 +88,29 @@ export default function ParticlesBackground() {
         if (this.y < 0 || this.y > h) this.vy = -this.vy;
       }
 
-      draw(context: CanvasRenderingContext2D, isHovered: boolean) {
+      draw(context: CanvasRenderingContext2D, isHovered: boolean, isActive: boolean, pulseFactor: number) {
         context.beginPath();
-        context.arc(this.x, this.y, isHovered ? this.radius * 2 : this.radius, 0, Math.PI * 2);
-        context.fillStyle = isHovered ? `${this.commit.color} 1)` : `${this.commit.color} 0.4)`;
-        context.fill();
         
-        if (isHovered) {
+        // Active project nodes are larger and glow
+        const finalRadius = isActive ? this.radius * (1.5 + pulseFactor * 0.5) : (isHovered ? this.radius * 2 : this.radius);
+        
+        context.arc(this.x, this.y, finalRadius, 0, Math.PI * 2);
+        
+        if (isActive) {
+          context.fillStyle = `${this.commit.color} 1)`;
+          context.shadowBlur = 15;
+          context.shadowColor = `${this.commit.color} 0.8)`;
+        } else {
+          context.fillStyle = isHovered ? `${this.commit.color} 1)` : `${this.commit.color} 0.4)`;
+          context.shadowBlur = 0;
+        }
+        
+        context.fill();
+        context.shadowBlur = 0; // Reset shadow for other drawings
+        
+        if (isHovered || isActive) {
           context.strokeStyle = `${this.commit.color} 0.8)`;
-          context.lineWidth = 2;
+          context.lineWidth = isActive ? 2 : 1;
           context.stroke();
         }
       }
@@ -105,7 +123,7 @@ export default function ParticlesBackground() {
       const sampled = shuffled.slice(0, maxDisplay);
       
       for (let i = 0; i < sampled.length; i++) {
-        particles.push(new Particle(canvas.width, canvas.height, sampled[i]));
+        particles.push(new Particle(canvas.width, canvas.height, sampled[i] as CommitData));
       }
     };
 
@@ -117,6 +135,8 @@ export default function ParticlesBackground() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pulseAngle += 0.05;
+      const pulseFactor = Math.sin(pulseAngle) * 0.5 + 0.5;
 
       let currentlyHovered: HoveredNode | null = null;
 
@@ -127,6 +147,7 @@ export default function ParticlesBackground() {
         const dyMouse = particles[i].y - mouse.y;
         const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
         const isHovered = distMouse < 15;
+        const isActive = activeProject ? particles[i].commit.project.toLowerCase() === activeProject.toLowerCase() : false;
 
         if (isHovered) {
           currentlyHovered = {
@@ -143,7 +164,7 @@ export default function ParticlesBackground() {
           ctx.stroke();
         }
 
-        particles[i].draw(ctx, isHovered);
+        particles[i].draw(ctx, isHovered, isActive, pulseFactor);
 
         for (let j = i + 1; j < particles.length; j++) {
           if (particles[i].commit.project !== particles[j].commit.project) continue;
@@ -153,9 +174,13 @@ export default function ParticlesBackground() {
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 130) {
+            const isBothActive = isActive && (activeProject ? particles[j].commit.project.toLowerCase() === activeProject.toLowerCase() : false);
+            
             ctx.beginPath();
-            ctx.strokeStyle = `${particles[i].commit.color} ${(1 - distance / 130) * 0.4})`;
-            ctx.lineWidth = 0.6;
+            // Lines for active project are more opaque
+            const opacity = isBothActive ? 0.8 : (1 - distance / 130) * 0.4;
+            ctx.strokeStyle = `${particles[i].commit.color} ${opacity})`;
+            ctx.lineWidth = isBothActive ? 1.5 : 0.6;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.stroke();
@@ -177,7 +202,7 @@ export default function ParticlesBackground() {
       window.removeEventListener("mouseout", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [activeProject]);
 
   return (
     <>

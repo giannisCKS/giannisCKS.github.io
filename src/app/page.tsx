@@ -219,9 +219,11 @@ function Navbar() {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Home() {
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+
   return (
     <main className="min-h-screen bg-transparent text-gray-900 overflow-x-hidden relative">
-      <ParticlesBackground />
+      <ParticlesBackground activeProject={hoveredProject} />
       {/* ── Navigation ── */}
       <Navbar />
 
@@ -352,6 +354,8 @@ export default function Home() {
                 variants={fadeUp}
                 whileHover={{ y: -5 }}
                 data-glass="true"
+                onMouseEnter={() => setHoveredProject(project.title)}
+                onMouseLeave={() => setHoveredProject(null)}
                 className="bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-2xl p-6 flex flex-col shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
               >
                 <div className="flex-1">
