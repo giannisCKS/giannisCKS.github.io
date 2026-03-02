@@ -161,7 +161,7 @@ export default function Home() {
             href="#"
             className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent animate-shimmer"
           >
-            GT
+            Giannis Papakostas
           </a>
 
           {/* Desktop nav */}
