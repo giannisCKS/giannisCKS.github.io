@@ -229,17 +229,11 @@ export default function Home() {
       <section
         className="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20 pb-16"
       >
-        <motion.div 
+        <motion.div
           className="max-w-4xl"
-          variants={staggerContainer}
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold uppercase mb-8">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            Available for opportunities
-          </motion.div>
-
           <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900">
             Giannis Papakostas
           </motion.h1>
