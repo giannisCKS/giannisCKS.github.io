@@ -15,78 +15,16 @@ html {
 
 /* ─── Custom scrollbar ─────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #171717;
+  background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-  background: #404040;
-  border-radius: 3px;
+  background: #888;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #555;
 }
-
-/* ─── Typing cursor animation ──────────────────────────────── */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-.animate-blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* ─── Fade-in-up for scroll reveals ───────────────────────── */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-/* ─── Gradient shimmer on hero text ───────────────────────── */
-@keyframes shimmer {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.animate-shimmer {
-  background-size: 200% 200%;
-  animation: shimmer 4s ease infinite;
-}
-
-/* ─── Floating glow orbs ───────────────────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50%       { transform: translateY(-20px) scale(1.05); }
-}
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-.animate-float-delay {
-  animation: float 8s ease-in-out infinite 2s;
-}
-
-/* ─── Reveal-on-scroll base state ──────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
 
