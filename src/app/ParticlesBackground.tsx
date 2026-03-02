@@ -1,113 +1,223 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { type Container, type ISourceOptions } from "@tsparticles/engine";
-import { loadSlim } from "@tsparticles/slim";
+import { useEffect, useRef, useState } from "react";
+import commitsData from "./commits.json";
+
+interface CommitData {
+  hash: string;
+  date: string;
+  message: string;
+  project: string;
+  color: string;
+}
+
+interface HoveredNode {
+  commit: CommitData;
+  x: number;
+  y: number;
+}
 
 export default function ParticlesBackground() {
-  const [init, setInit] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
 
-  // This should be run only once per application lifetime
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      // You can initiate the tsParticles instance (engine) here, adding custom shapes or presets
-      // This loads the tsparticles package bundle, it's the easiest method for getting everything ready
-      // starting from v2 you can add only the features you need reducing the bundle size
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Particle[] = [];
+
+    const mouse = {
+      x: -1000,
+      y: -1000,
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Check if mouse is over a glass box
+      const target = e.target as HTMLElement;
+      if (target && target.closest("[data-glass='true']")) {
+        mouse.x = -1000;
+        mouse.y = -1000;
+        setHoveredNode(null);
+        return;
+      }
+      
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+      setHoveredNode(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseout", handleMouseLeave);
+
+    class Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      commit: CommitData;
+
+      constructor(w: number, h: number, commit: CommitData) {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.radius = Math.random() * 1.5 + 2.0;
+        this.commit = commit;
+      }
+
+      update(w: number, h: number) {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > w) this.vx = -this.vx;
+        if (this.y < 0 || this.y > h) this.vy = -this.vy;
+      }
+
+      draw(context: CanvasRenderingContext2D, isHovered: boolean) {
+        context.beginPath();
+        context.arc(this.x, this.y, isHovered ? this.radius * 2 : this.radius, 0, Math.PI * 2);
+        context.fillStyle = isHovered ? `${this.commit.color} 1)` : `${this.commit.color} 0.4)`;
+        context.fill();
+        
+        if (isHovered) {
+          context.strokeStyle = `${this.commit.color} 0.8)`;
+          context.lineWidth = 2;
+          context.stroke();
+        }
+      }
+    }
+
+    const initParticles = () => {
+      particles = [];
+      const maxDisplay = Math.min(commitsData.length, Math.floor((canvas.width * canvas.height) / 5000));
+      const shuffled = [...commitsData].sort(() => 0.5 - Math.random());
+      const sampled = shuffled.slice(0, maxDisplay);
+      
+      for (let i = 0; i < sampled.length; i++) {
+        particles.push(new Particle(canvas.width, canvas.height, sampled[i]));
+      }
+    };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let currentlyHovered: HoveredNode | null = null;
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update(canvas.width, canvas.height);
+        
+        const dxMouse = particles[i].x - mouse.x;
+        const dyMouse = particles[i].y - mouse.y;
+        const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+        const isHovered = distMouse < 15;
+
+        if (isHovered) {
+          currentlyHovered = {
+            commit: particles[i].commit,
+            x: particles[i].x,
+            y: particles[i].y
+          };
+          
+          ctx.beginPath();
+          ctx.strokeStyle = `${particles[i].commit.color} 0.8)`;
+          ctx.lineWidth = 1;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+
+        particles[i].draw(ctx, isHovered);
+
+        for (let j = i + 1; j < particles.length; j++) {
+          if (particles[i].commit.project !== particles[j].commit.project) continue;
+
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 130) {
+            ctx.beginPath();
+            ctx.strokeStyle = `${particles[i].commit.color} ${(1 - distance / 130) * 0.4})`;
+            ctx.lineWidth = 0.6;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      setHoveredNode(currentlyHovered);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("resize", resize);
+    resize();
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseout", handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
-
-  const options: ISourceOptions = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "transparent",
-        },
-      },
-      fullScreen: {
-        enable: true,
-        zIndex: -1,
-      },
-      fpsLimit: 120,
-      interactivity: {
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "repulse",
-          },
-        },
-        modes: {
-          push: {
-            quantity: 4,
-          },
-          repulse: {
-            distance: 100,
-            duration: 0.4,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "#94a3b8", // Tailwind slate-400 (darker for better visibility)
-        },
-        links: {
-          color: "#cbd5e1", // Tailwind slate-300
-          distance: 150,
-          enable: true,
-          opacity: 0.6,
-          width: 1,
-        },
-        move: {
-          direction: "none",
-          enable: true,
-          outModes: {
-            default: "bounce",
-          },
-          random: false,
-          speed: 1.5,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 80,
-        },
-        opacity: {
-          value: 0.6,
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 1, max: 4 },
-        },
-      },
-      detectRetina: true,
-    }),
-    [],
-  );
-
-  if (init) {
-    return (
-      <Particles
-        id="tsparticles"
-        particlesLoaded={particlesLoaded}
-        options={options}
+  return (
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 z-0 opacity-80 mix-blend-multiply"
       />
-    );
-  }
-
-  return null;
+      {hoveredNode && (
+        <div 
+          className="fixed z-50 pointer-events-none bg-white/70 backdrop-blur-3xl border border-white/40 shadow-2xl shadow-blue-500/10 rounded-xl p-4 max-w-sm transition-opacity duration-150 flex flex-col gap-1.5"
+          style={{
+            left: `${hoveredNode.x + 20}px`,
+            top: `${hoveredNode.y + 20}px`,
+            transform: 'translate(0, -50%)'
+          }}
+        >
+          <div className="flex justify-between items-center gap-4">
+            <span 
+              className="font-mono text-xs font-bold px-2 py-1 rounded"
+              style={{
+                color: `${hoveredNode.commit.color} 1)`,
+                backgroundColor: `${hoveredNode.commit.color} 0.1)`,
+              }}
+            >
+              {hoveredNode.commit.hash}
+            </span>
+            <span className="text-xs text-gray-500 font-medium">
+              {hoveredNode.commit.date}
+            </span>
+          </div>
+          <p className="text-[10px] font-semibold tracking-wider uppercase"
+             style={{ color: `${hoveredNode.commit.color} 0.8)` }}
+          >
+            {hoveredNode.commit.project}
+          </p>
+          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+            {hoveredNode.commit.message}
+          </p>
+        </div>
+      )}
+    </>
+  );
 }

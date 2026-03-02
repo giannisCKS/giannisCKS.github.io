@@ -277,7 +277,11 @@ export default function Home() {
 
           <div className="grid md:grid-cols-5 gap-12 items-start mt-16">
             {/* Bio */}
-            <motion.div variants={fadeUp} className="md:col-span-3 space-y-5">
+            <motion.div 
+              variants={fadeUp} 
+              data-glass="true"
+              className="md:col-span-3 space-y-5 bg-white/70 backdrop-blur-3xl border border-white/40 rounded-2xl p-8 shadow-xl shadow-blue-500/5"
+            >
               <p className="text-gray-700 leading-relaxed text-base">
                 I&apos;m a passionate software developer with a strong
                 foundation in building scalable web applications and robust
@@ -314,7 +318,8 @@ export default function Home() {
                 <motion.div
                   key={skill.label}
                   variants={fadeUp}
-                  className="bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg p-5 hover:border-blue-300 hover:shadow-sm transition-all"
+                  data-glass="true"
+                  className="bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-xl p-5 shadow-lg shadow-blue-500/5 group"
                 >
                   <p className="text-blue-600 text-sm font-bold uppercase tracking-wide mb-2">
                     {skill.label}
@@ -346,7 +351,8 @@ export default function Home() {
                 key={project.title}
                 variants={fadeUp}
                 whileHover={{ y: -5 }}
-                className="bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg p-6 flex flex-col hover:border-blue-300 hover:shadow-md transition-all"
+                data-glass="true"
+                className="bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-2xl p-6 flex flex-col shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
               >
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-gray-900 mb-3">
@@ -546,13 +552,14 @@ function ContactCard({
       rel={external ? "noopener noreferrer" : undefined}
       variants={variants}
       whileHover={{ y: -5 }}
-      className="flex flex-col items-center gap-3 p-6 bg-white/60 backdrop-blur-md border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all"
+      data-glass="true"
+      className="flex flex-col items-center gap-3 p-6 bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-xl shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
     >
-      <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-700 transition-colors">
+      <div className="w-12 h-12 rounded-lg bg-gray-100/50 backdrop-blur-sm flex items-center justify-center text-gray-700 group-hover:text-blue-600 transition-colors">
         {icon}
       </div>
       <div className="text-center">
-        <p className="text-sm font-semibold text-gray-900">
+        <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
           {label}
         </p>
         <p className="text-xs text-gray-600 mt-1">{description}</p>
