@@ -22,19 +22,71 @@ interface ParticlesProps {
   activeProject?: string | null;
 }
 
+class Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  commit: CommitData;
+
+  constructor(w: number, h: number, commit: CommitData) {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.vx = (Math.random() - 0.5) * 0.8;
+    this.vy = (Math.random() - 0.5) * 0.8;
+    this.radius = Math.random() * 1.5 + 2.0;
+    this.commit = commit;
+  }
+
+  update(w: number, h: number) {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x < 0 || this.x > w) this.vx = -this.vx;
+    if (this.y < 0 || this.y > h) this.vy = -this.vy;
+  }
+
+  draw(context: CanvasRenderingContext2D, isHovered: boolean, isActive: boolean, pulseFactor: number) {
+    context.beginPath();
+    
+    const finalRadius = isActive ? this.radius * (1.5 + pulseFactor * 0.5) : (isHovered ? this.radius * 2 : this.radius);
+    
+    context.arc(this.x, this.y, finalRadius, 0, Math.PI * 2);
+    
+    if (isActive) {
+      context.fillStyle = `${this.commit.color} 1)`;
+      context.shadowBlur = 15;
+      context.shadowColor = `${this.commit.color} 0.8)`;
+    } else {
+      context.fillStyle = isHovered ? `${this.commit.color} 1)` : `${this.commit.color} 0.4)`;
+      context.shadowBlur = 0;
+    }
+    
+    context.fill();
+    context.shadowBlur = 0;
+    
+    if (isHovered || isActive) {
+      context.strokeStyle = `${this.commit.color} 0.8)`;
+      context.lineWidth = isActive ? 2 : 1;
+      context.stroke();
+    }
+  }
+}
+
 export default function ParticlesBackground({ activeProject }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
   
   // Use refs to store state that needs to be accessed in the animation loop without restarts
   const activeProjectRef = useRef<string | null>(null);
-  const particlesRef = useRef<any[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const animationFrameIdRef = useRef<number>(0);
   const mouseRef = useRef({ x: -1000, y: -1000 });
 
   // Update the ref whenever the prop changes
   useEffect(() => {
-    activeProjectRef.current = activeProject;
+    activeProjectRef.current = activeProject ?? null;
   }, [activeProject]);
 
   useEffect(() => {
@@ -63,58 +115,6 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseout", handleMouseLeave);
-
-    class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      commit: CommitData;
-
-      constructor(w: number, h: number, commit: CommitData) {
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.vy = (Math.random() - 0.5) * 0.8;
-        this.radius = Math.random() * 1.5 + 2.0;
-        this.commit = commit;
-      }
-
-      update(w: number, h: number) {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        if (this.x < 0 || this.x > w) this.vx = -this.vx;
-        if (this.y < 0 || this.y > h) this.vy = -this.vy;
-      }
-
-      draw(context: CanvasRenderingContext2D, isHovered: boolean, isActive: boolean, pulseFactor: number) {
-        context.beginPath();
-        
-        const finalRadius = isActive ? this.radius * (1.5 + pulseFactor * 0.5) : (isHovered ? this.radius * 2 : this.radius);
-        
-        context.arc(this.x, this.y, finalRadius, 0, Math.PI * 2);
-        
-        if (isActive) {
-          context.fillStyle = `${this.commit.color} 1)`;
-          context.shadowBlur = 15;
-          context.shadowColor = `${this.commit.color} 0.8)`;
-        } else {
-          context.fillStyle = isHovered ? `${this.commit.color} 1)` : `${this.commit.color} 0.4)`;
-          context.shadowBlur = 0;
-        }
-        
-        context.fill();
-        context.shadowBlur = 0;
-        
-        if (isHovered || isActive) {
-          context.strokeStyle = `${this.commit.color} 0.8)`;
-          context.lineWidth = isActive ? 2 : 1;
-          context.stroke();
-        }
-      }
-    }
 
     const initParticles = () => {
       const particles = [];

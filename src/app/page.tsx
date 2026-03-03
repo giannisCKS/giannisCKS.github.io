@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import ParticlesBackground from "./ParticlesBackground";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -547,7 +547,7 @@ function ContactCard({
   label: string;
   description: string;
   icon: React.ReactNode;
-  variants?: any;
+  variants?: Variants;
 }) {
   return (
     <motion.a
