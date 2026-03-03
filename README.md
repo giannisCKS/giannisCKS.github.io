@@ -28,6 +28,8 @@ npm install
 npm run dev        # start dev server
 npm run build      # build static export to out/
 npm run lint       # run ESLint
+npm run typecheck  # run TypeScript typecheck
+npm run test       # run unit tests (Vitest)
 ```
 
 ## Deployment
