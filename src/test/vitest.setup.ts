@@ -7,6 +7,8 @@ function createMockCanvasRenderingContext2D(): CanvasRenderingContext2D {
     fill: vi.fn(),
     stroke: vi.fn(),
     clearRect: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
     fillStyle: "",
     strokeStyle: "",
     shadowBlur: 0,
@@ -20,15 +22,23 @@ function createMockCanvasRenderingContext2D(): CanvasRenderingContext2D {
 beforeEach(() => {
   vi.stubGlobal(
     "requestAnimationFrame",
-    ((_callback: FrameRequestCallback) => 1) as typeof requestAnimationFrame,
+    ((callback: FrameRequestCallback) => {
+      void callback;
+      return 1;
+    }) as typeof requestAnimationFrame,
   );
   vi.stubGlobal(
     "cancelAnimationFrame",
-    ((_id: number) => {}) as typeof cancelAnimationFrame,
+    ((id: number) => {
+      void id;
+    }) as typeof cancelAnimationFrame,
   );
 
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(
-    (_contextId: string) => createMockCanvasRenderingContext2D(),
+    (contextId: string) => {
+      void contextId;
+      return createMockCanvasRenderingContext2D();
+    },
   );
 });
 
@@ -36,4 +46,3 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
-
