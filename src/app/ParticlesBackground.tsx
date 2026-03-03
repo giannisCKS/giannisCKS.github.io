@@ -25,6 +25,17 @@ interface ParticlesProps {
 export default function ParticlesBackground({ activeProject }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
+  
+  // Use refs to store state that needs to be accessed in the animation loop without restarts
+  const activeProjectRef = useRef<string | null>(null);
+  const particlesRef = useRef<any[]>([]);
+  const animationFrameIdRef = useRef<number>(0);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+
+  // Update the ref whenever the prop changes
+  useEffect(() => {
+    activeProjectRef.current = activeProject;
+  }, [activeProject]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,30 +44,20 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
-    let particles: Particle[] = [];
     let pulseAngle = 0;
-
-    const mouse = {
-      x: -1000,
-      y: -1000,
-    };
 
     const handleMouseMove = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target && target.closest("[data-glass='true']")) {
-        mouse.x = -1000;
-        mouse.y = -1000;
+        mouseRef.current = { x: -1000, y: -1000 };
         setHoveredNode(null);
         return;
       }
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouseRef.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseLeave = () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
+      mouseRef.current = { x: -1000, y: -1000 };
       setHoveredNode(null);
     };
 
@@ -91,7 +92,6 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
       draw(context: CanvasRenderingContext2D, isHovered: boolean, isActive: boolean, pulseFactor: number) {
         context.beginPath();
         
-        // Active project nodes are larger and glow
         const finalRadius = isActive ? this.radius * (1.5 + pulseFactor * 0.5) : (isHovered ? this.radius * 2 : this.radius);
         
         context.arc(this.x, this.y, finalRadius, 0, Math.PI * 2);
@@ -106,7 +106,7 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
         }
         
         context.fill();
-        context.shadowBlur = 0; // Reset shadow for other drawings
+        context.shadowBlur = 0;
         
         if (isHovered || isActive) {
           context.strokeStyle = `${this.commit.color} 0.8)`;
@@ -117,19 +117,21 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
     }
 
     const initParticles = () => {
-      particles = [];
-      const maxDisplay = Math.min(commitsData.length, Math.floor((canvas.width * canvas.height) / 5000));
+      const particles = [];
+      const maxDisplay = Math.min(commitsData.length, Math.floor((window.innerWidth * window.innerHeight) / 5000));
       const shuffled = [...commitsData].sort(() => 0.5 - Math.random());
       const sampled = shuffled.slice(0, maxDisplay);
       
       for (let i = 0; i < sampled.length; i++) {
-        particles.push(new Particle(canvas.width, canvas.height, sampled[i] as CommitData));
+        particles.push(new Particle(window.innerWidth, window.innerHeight, sampled[i] as CommitData));
       }
+      particlesRef.current = particles;
     };
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Re-init on resize to keep density correct
       initParticles();
     };
 
@@ -139,6 +141,9 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
       const pulseFactor = Math.sin(pulseAngle) * 0.5 + 0.5;
 
       let currentlyHovered: HoveredNode | null = null;
+      const currentActiveProject = activeProjectRef.current;
+      const particles = particlesRef.current;
+      const mouse = mouseRef.current;
 
       for (let i = 0; i < particles.length; i++) {
         particles[i].update(canvas.width, canvas.height);
@@ -147,7 +152,7 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
         const dyMouse = particles[i].y - mouse.y;
         const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
         const isHovered = distMouse < 15;
-        const isActive = activeProject ? particles[i].commit.project.toLowerCase() === activeProject.toLowerCase() : false;
+        const isActive = currentActiveProject ? particles[i].commit.project.toLowerCase() === currentActiveProject.toLowerCase() : false;
 
         if (isHovered) {
           currentlyHovered = {
@@ -174,10 +179,9 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 130) {
-            const isBothActive = isActive && (activeProject ? particles[j].commit.project.toLowerCase() === activeProject.toLowerCase() : false);
+            const isBothActive = isActive && (currentActiveProject ? particles[j].commit.project.toLowerCase() === currentActiveProject.toLowerCase() : false);
             
             ctx.beginPath();
-            // Lines for active project are more opaque
             const opacity = isBothActive ? 0.8 : (1 - distance / 130) * 0.4;
             ctx.strokeStyle = `${particles[i].commit.color} ${opacity})`;
             ctx.lineWidth = isBothActive ? 1.5 : 0.6;
@@ -189,10 +193,9 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
       }
       
       setHoveredNode(currentlyHovered);
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
 
-    window.addEventListener("resize", resize);
     resize();
     animate();
 
@@ -200,9 +203,9 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseout", handleMouseLeave);
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animationFrameIdRef.current);
     };
-  }, [activeProject]);
+  }, []); // Run effect only once on mount
 
   return (
     <>
@@ -212,7 +215,7 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
       />
       {hoveredNode && (
         <div 
-          className="fixed z-50 pointer-events-none bg-white/70 backdrop-blur-3xl border border-white/40 shadow-2xl shadow-blue-500/10 rounded-xl p-4 max-w-sm transition-opacity duration-150 flex flex-col gap-1.5"
+          className="fixed z-50 pointer-events-none bg-slate-100/60 backdrop-blur-3xl border border-white/40 shadow-2xl shadow-gray-500/10 rounded-xl p-4 max-w-sm transition-opacity duration-150 flex flex-col gap-1.5"
           style={{
             left: `${hoveredNode.x + 20}px`,
             top: `${hoveredNode.y + 20}px`,

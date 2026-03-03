@@ -282,7 +282,7 @@ export default function Home() {
             <motion.div 
               variants={fadeUp} 
               data-glass="true"
-              className="md:col-span-3 space-y-5 bg-white/70 backdrop-blur-3xl border border-white/40 rounded-2xl p-8 shadow-xl shadow-blue-500/5"
+              className="md:col-span-3 space-y-5 bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-2xl p-8 shadow-xl shadow-gray-500/5"
             >
               <p className="text-gray-700 leading-relaxed text-base">
                 I&apos;m a passionate software developer with a strong
@@ -321,7 +321,7 @@ export default function Home() {
                   key={skill.label}
                   variants={fadeUp}
                   data-glass="true"
-                  className="bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-xl p-5 shadow-lg shadow-blue-500/5 group"
+                  className="bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-xl shadow-lg shadow-gray-500/5 group"
                 >
                   <p className="text-blue-600 text-sm font-bold uppercase tracking-wide mb-2">
                     {skill.label}
@@ -356,7 +356,7 @@ export default function Home() {
                 data-glass="true"
                 onMouseEnter={() => setHoveredProject(project.title)}
                 onMouseLeave={() => setHoveredProject(null)}
-                className="bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-2xl p-6 flex flex-col shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
+                className="bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-2xl p-6 flex flex-col shadow-lg shadow-gray-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
               >
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-gray-900 mb-3">
@@ -557,7 +557,7 @@ function ContactCard({
       variants={variants}
       whileHover={{ y: -5 }}
       data-glass="true"
-      className="flex flex-col items-center gap-3 p-6 bg-white/70 backdrop-blur-3xl border border-blue-200/50 rounded-xl shadow-lg shadow-blue-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
+      className="flex flex-col items-center gap-3 p-6 bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-xl shadow-lg shadow-gray-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
     >
       <div className="w-12 h-12 rounded-lg bg-gray-100/50 backdrop-blur-sm flex items-center justify-center text-gray-700 group-hover:text-blue-600 transition-colors">
         {icon}
