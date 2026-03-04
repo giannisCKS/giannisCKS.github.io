@@ -56,13 +56,13 @@ const navLinks = [
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { 
-      duration: 0.5
-    } 
-  }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
 };
 
 const staggerContainer = {
@@ -71,8 +71,8 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-    }
-  }
+    },
+  },
 };
 
 // ─── GitHub SVG ───────────────────────────────────────────────────────────────
@@ -228,28 +228,34 @@ export default function Home() {
       <Navbar />
 
       {/* ── Hero ── */}
-      <section
-        className="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20 pb-16"
-      >
-        <motion.div
-          className="max-w-4xl"
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900">
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20 pb-16">
+        <motion.div className="max-w-4xl" initial="hidden" animate="visible">
+          <motion.h1
+            variants={fadeUp}
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900"
+          >
             Giannis Papakostas
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-gray-600 font-medium mb-6">
+          <motion.p
+            variants={fadeUp}
+            className="text-xl md:text-2xl text-gray-600 font-medium mb-6"
+          >
             Software Developer & Full-Stack Engineer
           </motion.p>
 
-          <motion.p variants={fadeUp} className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          <motion.p
+            variants={fadeUp}
+            className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
             Crafting scalable, high-quality software with clean architecture and
             attention to detail. Passionate about great user experiences.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
             <a
               href="#projects"
               className="px-8 py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors text-sm"
@@ -268,7 +274,7 @@ export default function Home() {
 
       {/* ── About ── */}
       <section id="about" className="py-20 px-6 bg-transparent">
-        <motion.div 
+        <motion.div
           className="max-w-6xl mx-auto"
           initial="hidden"
           whileInView="visible"
@@ -279,8 +285,8 @@ export default function Home() {
 
           <div className="grid md:grid-cols-5 gap-12 items-start mt-16">
             {/* Bio */}
-            <motion.div 
-              variants={fadeUp} 
+            <motion.div
+              variants={fadeUp}
               data-glass="true"
               className="md:col-span-3 space-y-5 bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-2xl p-8 shadow-xl shadow-gray-500/5"
             >
@@ -315,7 +321,10 @@ export default function Home() {
             </motion.div>
 
             {/* Skills grid */}
-            <motion.div variants={staggerContainer} className="md:col-span-2 space-y-6">
+            <motion.div
+              variants={staggerContainer}
+              className="md:col-span-2 space-y-6"
+            >
               {skills.map((skill) => (
                 <motion.div
                   key={skill.label}
@@ -338,7 +347,7 @@ export default function Home() {
 
       {/* ── Projects ── */}
       <section id="projects" className="py-20 px-6 bg-transparent">
-        <motion.div 
+        <motion.div
           className="max-w-6xl mx-auto"
           initial="hidden"
           whileInView="visible"
@@ -347,7 +356,10 @@ export default function Home() {
         >
           <SectionHeading title="Projects" subtitle="Featured Work" />
 
-          <motion.div variants={staggerContainer} className="grid md:grid-cols-3 gap-6 mt-16">
+          <motion.div
+            variants={staggerContainer}
+            className="grid md:grid-cols-3 gap-6 mt-16"
+          >
             {projects.map((project) => (
               <motion.div
                 key={project.title}
@@ -420,7 +432,7 @@ export default function Home() {
 
       {/* ── Contact ── */}
       <section id="contact" className="py-20 px-6 bg-transparent">
-        <motion.div 
+        <motion.div
           className="max-w-4xl mx-auto text-center"
           initial="hidden"
           whileInView="visible"
@@ -428,7 +440,10 @@ export default function Home() {
           variants={staggerContainer}
         >
           <motion.div variants={fadeUp}>
-            <SectionHeading title="Get In Touch" subtitle="Contact Information" />
+            <SectionHeading
+              title="Get In Touch"
+              subtitle="Contact Information"
+            />
 
             <p className="text-gray-600 mt-8 mb-12 leading-relaxed text-base">
               I&apos;m always open to new opportunities, collaborations, and
@@ -437,7 +452,10 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <motion.div variants={staggerContainer} className="grid sm:grid-cols-3 gap-4">
+          <motion.div
+            variants={staggerContainer}
+            className="grid sm:grid-cols-3 gap-4"
+          >
             {/* GitHub */}
             <ContactCard
               href="https://github.com/giannisCKS"
@@ -450,7 +468,7 @@ export default function Home() {
 
             {/* Email */}
             <ContactCard
-              href="mailto:contact@example.com"
+              href="mailto:giannis2k@icloud.com"
               external={false}
               label="Email"
               description="Send a message"
@@ -521,11 +539,17 @@ function SectionHeading({
   return (
     <div className="text-center">
       {subtitle && (
-        <motion.p variants={fadeUp} className="text-blue-600 text-sm font-semibold uppercase tracking-wide mb-3">
+        <motion.p
+          variants={fadeUp}
+          className="text-blue-600 text-sm font-semibold uppercase tracking-wide mb-3"
+        >
           {subtitle}
         </motion.p>
       )}
-      <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-gray-900">
+      <motion.h2
+        variants={fadeUp}
+        className="text-3xl md:text-4xl font-bold text-gray-900"
+      >
         {title}
       </motion.h2>
     </div>
