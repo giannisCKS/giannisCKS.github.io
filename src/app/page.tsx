@@ -22,11 +22,11 @@ const projects: {
     demo: "https://dancefolklore.gr",
   },
   {
-    title: "Project Beta",
+    title: "ProLink",
     description:
-      "A RESTful API service built with microservices architecture, containerized with Docker and deployed on Kubernetes.",
-    tech: ["Node.js", "Express", "Docker", "Kubernetes"],
-    github: "https://github.com/giannisCKS",
+      "A hyper-local service marketplace connecting clients and vetted professionals in real-time, featuring a Next.js REST API and Flutter mobile app.",
+    tech: ["Next.js", "TypeScript", "Flutter", "Prisma", "PostgreSQL"],
+    github: "https://github.com/giannisCKS/ProLink",
     demo: null,
   },
   {
