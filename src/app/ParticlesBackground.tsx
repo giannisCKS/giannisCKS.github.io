@@ -20,6 +20,7 @@ interface HoveredNode {
 
 interface ParticlesProps {
   activeProject?: string | null;
+  theme?: "light" | "dark";
 }
 
 class Particle {
@@ -74,7 +75,10 @@ class Particle {
   }
 }
 
-export default function ParticlesBackground({ activeProject }: ParticlesProps) {
+export default function ParticlesBackground({
+  activeProject,
+  theme = "light",
+}: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
   
@@ -211,11 +215,15 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
     <>
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-0 opacity-80 mix-blend-multiply"
+        className={`fixed inset-0 z-0 ${
+          theme === "dark"
+            ? "opacity-60 mix-blend-screen"
+            : "opacity-80 mix-blend-multiply"
+        }`}
       />
       {hoveredNode && (
         <div 
-          className="fixed z-50 pointer-events-none bg-slate-100/60 backdrop-blur-3xl border border-white/40 shadow-2xl shadow-gray-500/10 rounded-xl p-4 max-w-sm transition-opacity duration-150 flex flex-col gap-1.5"
+          className="particle-tooltip fixed z-50 pointer-events-none rounded-xl p-4 max-w-sm transition-opacity duration-150 flex flex-col gap-1.5"
           style={{
             left: `${hoveredNode.x + 20}px`,
             top: `${hoveredNode.y + 20}px`,
@@ -232,7 +240,7 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
             >
               {hoveredNode.commit.hash}
             </span>
-            <span className="text-xs text-gray-500 font-medium">
+            <span className="theme-text-muted text-xs font-medium">
               {hoveredNode.commit.date}
             </span>
           </div>
@@ -241,7 +249,7 @@ export default function ParticlesBackground({ activeProject }: ParticlesProps) {
           >
             {hoveredNode.commit.project}
           </p>
-          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+          <p className="theme-text text-sm leading-relaxed font-medium">
             {hoveredNode.commit.message}
           </p>
         </div>

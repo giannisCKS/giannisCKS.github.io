@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import ParticlesBackground from "./ParticlesBackground";
 
@@ -30,20 +30,20 @@ const projects: {
     demo: null,
   },
   {
-    title: "Project Gamma",
+    title: "ASAC",
     description:
-      "A machine learning pipeline for data processing and visualization with an interactive web interface.",
-    tech: ["Python", "FastAPI", "React", "TensorFlow"],
-    github: "https://github.com/giannisCKS",
+      "A local-first Node.js/TypeScript CLI for running a professional penetration research assistant inside an isolated Podman pod with Ollama-backed inference, explicit import/export flows, and offline-by-default networking.",
+    tech: ["Node.js", "TypeScript", "Podman", "Ollama", "Security CLI"],
+    github: "https://github.com/giannisCKS/ASAC",
     demo: null,
   },
 ];
 
 const skills = [
-  { label: "Languages", value: "TypeScript, Python, Go, JavaScript" },
+  { label: "Languages", value: "TypeScript, Python, Go, JavaScript, Java, Flutter" },
   { label: "Frontend", value: "React, Next.js, Tailwind CSS, HTML/CSS" },
   { label: "Backend", value: "Node.js, FastAPI, REST APIs, GraphQL" },
-  { label: "DevOps", value: "Docker, Kubernetes, CI/CD, AWS" },
+  { label: "DevOps", value: "Podman, Kubernetes, CI/CD, AWS" },
 ];
 
 const navLinks = [
@@ -51,6 +51,33 @@ const navLinks = [
   { href: "#projects", label: "Projects" },
   { href: "#contact", label: "Contact" },
 ];
+
+type Theme = "light" | "dark";
+
+const projectThemes: Record<
+  string,
+  {
+    eyebrow: string;
+    accent: string;
+    accentSoft: string;
+  }
+> = {
+  "Dancefolklore.gr": {
+    eyebrow: "Cultural Archive",
+    accent: "rgba(195, 194, 163, 0.92)",
+    accentSoft: "rgba(195, 194, 163, 0.22)",
+  },
+  ProLink: {
+    eyebrow: "Service Platform",
+    accent: "rgba(59, 130, 246, 0.92)",
+    accentSoft: "rgba(59, 130, 246, 0.2)",
+  },
+  ASAC: {
+    eyebrow: "Security Research CLI",
+    accent: "rgba(20, 184, 166, 0.92)",
+    accentSoft: "rgba(20, 184, 166, 0.2)",
+  },
+};
 
 // ─── Animations ───────────────────────────────────────────────────────────────
 
@@ -92,7 +119,56 @@ function GitHubIcon({ className }: { className?: string }) {
 
 // ─── Navbar component ───────────────────────────────────────────────────────────
 
-function Navbar() {
+function ThemeToggleButton({
+  theme,
+  onClick,
+  className,
+}: {
+  theme: Theme;
+  onClick: () => void;
+  className?: string;
+}) {
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`theme-toggle ${className ?? ""}`.trim()}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-pressed={isDark}
+    >
+      {isDark ? (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+          />
+        </svg>
+      ) : (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            d="M12 3v2.5M12 18.5V21M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M3 12h2.5M18.5 12H21M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77M12 16a4 4 0 100-8 4 4 0 000 8z"
+          />
+        </svg>
+      )}
+      <span>{isDark ? "Light" : "Dark"}</span>
+    </button>
+  );
+}
+
+function Navbar({
+  theme,
+  onToggleTheme,
+}: {
+  theme: Theme;
+  onToggleTheme: () => void;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -108,15 +184,13 @@ function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/70 backdrop-blur-md border-b border-gray-200 shadow-sm py-3"
-          : "bg-transparent py-5"
+        scrolled ? "theme-nav-shell theme-nav-shell-scrolled py-3" : "py-5"
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         <a
           href="#"
-          className="text-xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors"
+          className="theme-brand text-xl font-bold tracking-tight transition-colors"
         >
           Giannis Papakostas
         </a>
@@ -127,7 +201,7 @@ function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm font-medium"
+                className="theme-nav-link text-sm font-medium transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -138,17 +212,20 @@ function Navbar() {
               href="https://github.com/giannisCKS"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium transition-colors"
+              className="theme-nav-button text-sm font-medium"
             >
               <GitHubIcon className="w-4 h-4" />
               GitHub
             </a>
           </li>
+          <li>
+            <ThemeToggleButton theme={theme} onClick={onToggleTheme} />
+          </li>
         </ul>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-gray-600 hover:text-gray-900 transition-colors p-1"
+          className="theme-nav-link md:hidden transition-colors p-1"
           onClick={() => setMenuOpen((o) => !o)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
@@ -181,16 +258,16 @@ function Navbar() {
       {/* Mobile menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ${
-          menuOpen ? "max-h-64 border-t border-gray-200" : "max-h-0"
+          menuOpen ? "max-h-72 border-t theme-border-color" : "max-h-0"
         }`}
       >
-        <div className="bg-white px-6 py-4">
+        <div className="theme-menu-surface px-6 py-4">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium"
+                  className="theme-nav-link text-sm font-medium transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
@@ -202,12 +279,22 @@ function Navbar() {
                 href="https://github.com/giannisCKS"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-900 hover:text-blue-600 text-sm font-medium transition-colors"
+                className="theme-nav-link flex items-center gap-2 text-sm font-medium transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 <GitHubIcon className="w-4 h-4" />
                 GitHub
               </a>
+            </li>
+            <li>
+              <ThemeToggleButton
+                theme={theme}
+                onClick={() => {
+                  onToggleTheme();
+                  setMenuOpen(false);
+                }}
+                className="w-full justify-center"
+              />
             </li>
           </ul>
         </div>
@@ -220,54 +307,119 @@ function Navbar() {
 
 export default function Home() {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [theme, setTheme] = useState<Theme>("light");
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("theme");
+    const nextTheme =
+      storedTheme === "light" || storedTheme === "dark"
+        ? storedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+
+    const frameId = window.requestAnimationFrame(() => {
+      setTheme(nextTheme);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === "dark" ? "light" : "dark"));
+  };
 
   return (
-    <main className="min-h-screen bg-transparent text-gray-900 overflow-x-hidden relative">
-      <ParticlesBackground activeProject={hoveredProject} />
+    <main className="theme-main min-h-screen overflow-x-hidden relative">
+      <ParticlesBackground activeProject={hoveredProject} theme={theme} />
       {/* ── Navigation ── */}
-      <Navbar />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       {/* ── Hero ── */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20 pb-16">
-        <motion.div className="max-w-4xl" initial="hidden" animate="visible">
-          <motion.h1
-            variants={fadeUp}
-            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900"
-          >
-            Giannis Papakostas
-          </motion.h1>
+      <section className="hero-stage min-h-screen px-6 pt-28 pb-16">
+        <motion.div
+          className="hero-shell mx-auto grid max-w-6xl items-end gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.7fr)]"
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="space-y-8 text-left">
+            <motion.div variants={fadeUp} className="hero-badge">
+              <span className="theme-accent-fill h-2.5 w-2.5 rounded-full" />
+              Software Developer & Full-Stack Engineer
+            </motion.div>
 
-          <motion.p
-            variants={fadeUp}
-            className="text-xl md:text-2xl text-gray-600 font-medium mb-6"
-          >
-            Software Developer & Full-Stack Engineer
-          </motion.p>
+            <motion.h1
+              variants={fadeUp}
+              className="theme-text-strong max-w-4xl text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl md:text-7xl"
+            >
+              Giannis
+              <br />
+              Papakostas
+            </motion.h1>
 
-          <motion.p
-            variants={fadeUp}
-            className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Crafting scalable, high-quality software with clean architecture and
-            attention to detail. Passionate about great user experiences.
-          </motion.p>
+            <motion.p
+              variants={fadeUp}
+              className="theme-text max-w-2xl text-base leading-8 md:text-lg"
+            >
+              Crafting scalable, high-quality software with clean architecture
+              and attention to detail. Passionate about great user experiences.
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col gap-4 sm:flex-row"
+            >
+              <a
+                href="#projects"
+                className="theme-button-primary inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5"
+              >
+                View Projects
+              </a>
+              <a
+                href="#contact"
+                className="theme-button-secondary inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold transition-all"
+              >
+                Contact Me
+              </a>
+            </motion.div>
+          </div>
 
           <motion.div
             variants={fadeUp}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            data-glass="true"
+            className="hero-aside"
           >
-            <a
-              href="#projects"
-              className="px-8 py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors text-sm"
-            >
-              View Projects
-            </a>
-            <a
-              href="#contact"
-              className="px-8 py-3 rounded-md border border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50 font-semibold transition-all text-sm"
-            >
-              Contact Me
-            </a>
+            <div className="space-y-5">
+              <div>
+                <p className="theme-text-faint text-xs font-semibold uppercase tracking-[0.32em]">
+                  Focus Areas
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {skills.slice(0, 3).map((skill) => (
+                    <span key={skill.label} className="hero-chip">
+                      {skill.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="hero-rule" />
+
+              <div className="space-y-3">
+                <p className="theme-text-muted text-sm font-semibold uppercase tracking-[0.22em]">
+                  Build Style
+                </p>
+                <p className="theme-text text-sm leading-7">
+                  Clean systems, dependable APIs, thoughtful interfaces, and
+                  product-minded execution across the stack.
+                </p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </section>
@@ -288,21 +440,29 @@ export default function Home() {
             <motion.div
               variants={fadeUp}
               data-glass="true"
-              className="md:col-span-3 space-y-5 bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-2xl p-8 shadow-xl shadow-gray-500/5"
+              className="editorial-sheet md:col-span-3"
             >
-              <p className="text-gray-700 leading-relaxed text-base">
+              <div className="theme-divider flex flex-wrap items-center justify-between gap-4 border-b pb-5">
+                <p className="theme-text-faint text-xs font-semibold uppercase tracking-[0.32em]">
+                  Bio
+                </p>
+                <p className="theme-text-faint text-xs font-medium uppercase tracking-[0.28em]">
+                  Systems + UX
+                </p>
+              </div>
+              <p className="theme-text leading-relaxed text-base">
                 I&apos;m a passionate software developer with a strong
                 foundation in building scalable web applications and robust
                 backend systems. I thrive at the intersection of clean code,
                 thoughtful architecture, and great user experience.
               </p>
-              <p className="text-gray-600 leading-relaxed text-base">
+              <p className="theme-text-muted leading-relaxed text-base">
                 With experience across the full stack, I enjoy turning complex
                 problems into elegant solutions. Whether it&apos;s crafting
                 pixel-perfect UIs or designing efficient APIs, I bring attention
                 to detail and a drive for excellence to every project.
               </p>
-              <p className="text-gray-600 leading-relaxed text-base">
+              <p className="theme-text-muted leading-relaxed text-base">
                 When I&apos;m not coding, I&apos;m exploring new technologies,
                 contributing to open-source projects, and continuously
                 sharpening my skills.
@@ -313,7 +473,7 @@ export default function Home() {
                   href="https://github.com/giannisCKS"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+                  className="theme-link inline-flex items-center gap-2 text-sm font-medium transition-colors"
                 >
                   View my GitHub profile →
                 </a>
@@ -323,21 +483,28 @@ export default function Home() {
             {/* Skills grid */}
             <motion.div
               variants={staggerContainer}
-              className="md:col-span-2 space-y-6"
+              className="md:col-span-2 space-y-4"
             >
-              {skills.map((skill) => (
+              {skills.map((skill, index) => (
                 <motion.div
                   key={skill.label}
                   variants={fadeUp}
                   data-glass="true"
-                  className="bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-xl shadow-lg shadow-gray-500/5 group"
+                  className="skill-ribbon"
                 >
-                  <p className="text-blue-600 text-sm font-bold uppercase tracking-wide mb-2">
-                    {skill.label}
-                  </p>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {skill.value}
-                  </p>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="theme-accent-text mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em]">
+                        {skill.label}
+                      </p>
+                      <p className="theme-text text-sm leading-relaxed">
+                        {skill.value}
+                      </p>
+                    </div>
+                    <span className="theme-text-faint text-xs font-semibold uppercase tracking-[0.26em]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -358,74 +525,124 @@ export default function Home() {
 
           <motion.div
             variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-6 mt-16"
+            className="project-console mt-16"
           >
-            {projects.map((project) => (
-              <motion.div
-                key={project.title}
-                variants={fadeUp}
-                whileHover={{ y: -5 }}
-                data-glass="true"
-                onMouseEnter={() => setHoveredProject(project.title)}
-                onMouseLeave={() => setHoveredProject(null)}
-                className="bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-2xl p-6 flex flex-col shadow-lg shadow-gray-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
-              >
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-5">
-                    {project.description}
-                  </p>
+            {projects.map((project, index) => {
+              const theme = projectThemes[project.title];
+              const isFeatured = project.title === "ASAC";
+              const isActive = hoveredProject === project.title;
+              const isDimmed = hoveredProject !== null && !isActive;
+              const panelStyle = {
+                "--project-accent": theme.accent,
+                "--project-accent-soft": theme.accentSoft,
+                order: isFeatured ? -1 : index,
+              } as CSSProperties;
 
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((t) => (
+              return (
+                <motion.div
+                  key={project.title}
+                  variants={fadeUp}
+                  whileHover={{ y: -8 }}
+                  data-glass="true"
+                  onMouseEnter={() => setHoveredProject(project.title)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  animate={{ opacity: isDimmed ? 0.58 : 1 }}
+                  transition={{ duration: 0.18 }}
+                  className={`project-console-card ${
+                    isFeatured ? "project-console-card-featured" : ""
+                  }`}
+                  style={panelStyle}
+                >
+                  <div className="project-console-topline">
+                    <div className="flex min-w-0 items-center gap-3">
                       <span
-                        key={t}
-                        className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-md font-medium"
-                      >
-                        {t}
+                        className="project-console-led"
+                        style={{ backgroundColor: theme.accent }}
+                      />
+                      <span className="project-console-eyebrow">
+                        {theme.eyebrow}
                       </span>
-                    ))}
+                    </div>
+                    <span className="project-console-index">
+                      PRJ-{String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                </div>
 
-                <div className="flex gap-4 pt-4 border-t border-gray-100">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
-                  >
-                    <GitHubIcon className="w-4 h-4" />
-                    View Code
-                  </a>
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                  <div className="project-console-body">
+                    <div className="space-y-4">
+                      <div>
+                        <span
+                          className="project-console-status"
+                          style={{
+                            borderColor: theme.accentSoft,
+                            color: theme.accent,
+                          }}
+                        >
+                          {isFeatured ? "Featured / Local-first" : "Selected work"}
+                        </span>
+                        <h3 className="project-console-title theme-text-strong">
+                          {project.title}
+                        </h3>
+                      </div>
+
+                      <p className="project-console-description theme-text">
+                        {project.description}
+                      </p>
+
+                      <div className="project-console-tags">
+                        {project.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="theme-tag project-console-tag"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="project-console-actions theme-divider">
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="theme-button-secondary project-console-link"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                      Live Demo
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+                        <GitHubIcon className="w-4 h-4" />
+                        Repository
+                      </a>
+                      {project.demo && (
+                        <a
+                          href={project.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="theme-accent-button project-console-link"
+                          style={{
+                            borderColor: theme.accentSoft,
+                            color: theme.accent,
+                          }}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          Live Demo
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </motion.div>
       </section>
@@ -445,7 +662,7 @@ export default function Home() {
               subtitle="Contact Information"
             />
 
-            <p className="text-gray-600 mt-8 mb-12 leading-relaxed text-base">
+            <p className="theme-text mt-8 mb-12 leading-relaxed text-base">
               I&apos;m always open to new opportunities, collaborations, and
               interesting conversations. Whether you have a project in mind or
               just want to say hi — feel free to reach out!
@@ -454,7 +671,7 @@ export default function Home() {
 
           <motion.div
             variants={staggerContainer}
-            className="grid sm:grid-cols-3 gap-4"
+            className="grid gap-4 sm:grid-cols-3"
           >
             {/* GitHub */}
             <ContactCard
@@ -512,13 +729,13 @@ export default function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-8 px-6 border-t border-gray-200 bg-transparent">
+      <footer className="theme-footer py-8 px-6 border-t bg-transparent">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-gray-600 text-sm">
+          <p className="theme-text text-sm">
             © {new Date().getFullYear()} Giannis Papakostas. All rights
             reserved.
           </p>
-          <p className="text-gray-500 text-xs">
+          <p className="theme-text-faint text-xs">
             Built with Next.js & Tailwind CSS
           </p>
         </div>
@@ -537,18 +754,18 @@ function SectionHeading({
   subtitle?: string;
 }) {
   return (
-    <div className="text-center">
+    <div className="section-heading text-center">
       {subtitle && (
         <motion.p
           variants={fadeUp}
-          className="text-blue-600 text-sm font-semibold uppercase tracking-wide mb-3"
+          className="section-heading-subtitle"
         >
           {subtitle}
         </motion.p>
       )}
       <motion.h2
         variants={fadeUp}
-        className="text-3xl md:text-4xl font-bold text-gray-900"
+        className="section-heading-title"
       >
         {title}
       </motion.h2>
@@ -579,18 +796,37 @@ function ContactCard({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       variants={variants}
-      whileHover={{ y: -5 }}
+      whileHover={{ y: -8 }}
       data-glass="true"
-      className="flex flex-col items-center gap-3 p-6 bg-slate-100/50 backdrop-blur-3xl border border-slate-200/50 rounded-xl shadow-lg shadow-gray-500/5 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group"
+      className="contact-rail group"
     >
-      <div className="w-12 h-12 rounded-lg bg-gray-100/50 backdrop-blur-sm flex items-center justify-center text-gray-700 group-hover:text-blue-600 transition-colors">
-        {icon}
+      <div className="contact-rail-icon">
+        <div className="theme-icon transition-colors">
+          {icon}
+        </div>
       </div>
-      <div className="text-center">
-        <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+      <div className="min-w-0 flex-1 text-left">
+        <p className="theme-text-faint text-[0.68rem] font-semibold uppercase tracking-[0.3em]">
           {label}
         </p>
-        <p className="text-xs text-gray-600 mt-1">{description}</p>
+        <p className="contact-rail-title mt-2 text-sm font-semibold transition-colors">
+          {description}
+        </p>
+      </div>
+      <div className="contact-rail-arrow" aria-hidden="true">
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            d="M5 12h14m-5-5l5 5-5 5"
+          />
+        </svg>
       </div>
     </motion.a>
   );
