@@ -188,6 +188,7 @@ html {
 
 .project-console {
   display: grid;
+  grid-auto-rows: 1fr;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
@@ -195,7 +196,7 @@ html {
 .project-console-card {
   position: relative;
   display: flex;
-  min-height: 22rem;
+  min-height: 24rem;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--surface-border);
@@ -230,16 +231,12 @@ html {
   pointer-events: none;
 }
 
-.project-console-card-featured {
-  min-height: 27rem;
-}
-
 .project-console-topline {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   border-bottom: 1px solid var(--surface-border);
   padding: 1rem 1.1rem;
@@ -254,9 +251,7 @@ html {
   box-shadow: 0 0 18px var(--project-accent);
 }
 
-.project-console-eyebrow,
-.project-console-index,
-.project-console-status {
+.project-console-eyebrow {
   font-size: 0.68rem;
   font-weight: 700;
   line-height: 1;
@@ -264,18 +259,8 @@ html {
   text-transform: uppercase;
 }
 
-.project-console-eyebrow,
-.project-console-index {
+.project-console-eyebrow {
   color: var(--text-faint);
-}
-
-.project-console-status {
-  display: inline-flex;
-  width: fit-content;
-  border: 1px solid;
-  border-radius: 999px;
-  padding: 0.48rem 0.62rem;
-  background: color-mix(in srgb, var(--surface-bg), transparent 18%);
 }
 
 .project-console-body {
@@ -290,18 +275,11 @@ html {
 }
 
 .project-console-title {
-  margin-top: 1.05rem;
   font-size: clamp(1.65rem, 2.1vw, 2.35rem);
   font-weight: 720;
   line-height: 1.08;
   letter-spacing: 0;
   overflow-wrap: anywhere;
-}
-
-.project-console-card-featured .project-console-title {
-  font-size: clamp(2.25rem, 4.2vw, 3.15rem);
-  font-weight: 760;
-  line-height: 0.98;
 }
 
 .project-console-description {
@@ -341,11 +319,7 @@ html {
 
 @media (min-width: 768px) {
   .project-console {
-    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.85fr);
-  }
-
-  .project-console-card-featured {
-    grid-row: span 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -364,22 +338,6 @@ html {
   position: relative;
   min-height: calc(100vh - 9rem);
   align-content: center;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  border: 1px solid var(--surface-border);
-  border-radius: 999px;
-  background: var(--surface-bg);
-  padding: 0.75rem 1rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  backdrop-filter: blur(14px);
 }
 
 .hero-aside {

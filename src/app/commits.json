@@ -1,5 +1,101 @@
 [
   {
+    "hash": "ce5f0b1",
+    "date": "2026-04-24",
+    "message": "push",
+    "project": "ASAC",
+    "color": "rgba(14, 165, 233,",
+    "private": false
+  },
+  {
+    "hash": "c5a7ae8",
+    "date": "2026-04-07",
+    "message": "add web reconnaissance and Wi-Fi workflows",
+    "project": "ASAC",
+    "color": "rgba(14, 165, 233,",
+    "private": false
+  },
+  {
+    "hash": "fe5baed",
+    "date": "2026-04-06",
+    "message": "add wifi_capture_verify_workflow tool and related functionality",
+    "project": "ASAC",
+    "color": "rgba(14, 165, 233,",
+    "private": false
+  },
+  {
+    "hash": "bdb7d05",
+    "date": "2026-04-06",
+    "message": "Implemented Wi-Fi monitoring, capture, and validation tools",
+    "project": "ASAC",
+    "color": "rgba(14, 165, 233,",
+    "private": false
+  },
+  {
+    "hash": "005a5e4",
+    "date": "2026-04-29",
+    "message": "height fix",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "5daf9ea",
+    "date": "2026-04-29",
+    "message": "feat: enhance HomeFlowerIntro component with improved scroll animations and responsiveness; update styles for better visual effects",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "592c301",
+    "date": "2026-04-28",
+    "message": "Merge pull request #1 from giannisCKS:flower-scroll-intro",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "b4ea51d",
+    "date": "2026-04-28",
+    "message": "feat: add scroll indicator to HomeFlowerIntro component; update styles for improved visibility and responsiveness",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "43c607a",
+    "date": "2026-04-28",
+    "message": "feat: add HomeFlowerIntro component and integrate into home pages; update styles and interactions",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "4692dfa",
+    "date": "2026-04-21",
+    "message": "Implement Cloudflare Pages deployment setup and add related scripts",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "74eadf2",
+    "date": "2026-03-13",
+    "message": "feat: Add README.md for Gerakofolia Villa project overview and setup instructions",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
+    "hash": "5d33ea7",
+    "date": "2026-03-13",
+    "message": "feat: Add initial layout and pages for Gerakofolia Villa website",
+    "project": "Gerakofolia Villa",
+    "color": "rgba(20, 184, 166,",
+    "private": false
+  },
+  {
     "hash": "dc5fa44",
     "date": "2026-03-05",
     "message": "ProLink commit (Description hidden)",
@@ -164,7 +260,7 @@
     "date": "2026-02-04",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -172,7 +268,7 @@
     "date": "2026-02-04",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -180,7 +276,7 @@
     "date": "2026-02-03",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -188,7 +284,7 @@
     "date": "2026-02-03",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -196,7 +292,7 @@
     "date": "2026-02-03",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -204,7 +300,7 @@
     "date": "2026-02-03",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -212,7 +308,7 @@
     "date": "2026-02-03",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -220,7 +316,7 @@
     "date": "2026-02-02",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -228,7 +324,7 @@
     "date": "2026-02-02",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {
@@ -236,7 +332,7 @@
     "date": "2026-02-02",
     "message": "DocScrape commit (Description hidden)",
     "project": "DocScrape",
-    "color": "rgba(16, 185, 129,",
+    "color": "rgba(245, 158, 11,",
     "private": false
   },
   {

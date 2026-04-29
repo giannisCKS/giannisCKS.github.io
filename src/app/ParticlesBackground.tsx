@@ -217,7 +217,7 @@ export default function ParticlesBackground({
         ref={canvasRef}
         className={`fixed inset-0 z-0 ${
           theme === "dark"
-            ? "opacity-60 mix-blend-screen"
+            ? "opacity-95 mix-blend-screen"
             : "opacity-80 mix-blend-multiply"
         }`}
       />

@@ -22,11 +22,27 @@ const projects: {
     demo: "https://dancefolklore.gr",
   },
   {
+    title: "Gerakofolia Villa",
+    description:
+      "A bilingual marketing site for a private sea-view villa in Nikiana, Lefkada, with localized pages, gallery content, and direct booking contact flows.",
+    tech: ["Next.js", "React", "TypeScript", "Cloudflare Pages"],
+    github: "https://github.com/giannisCKS/gerakofolia",
+    demo: "https://gerakofolia-villa.gr/",
+  },
+  {
     title: "ProLink",
     description:
       "A hyper-local service marketplace connecting clients and vetted professionals in real-time, featuring a Next.js REST API and Flutter mobile app.",
     tech: ["Next.js", "TypeScript", "Flutter", "Prisma", "PostgreSQL"],
     github: "https://github.com/giannisCKS/ProLink",
+    demo: null,
+  },
+  {
+    title: "DocScrape",
+    description:
+      "A local PDF reasoning workspace that watches document folders, indexes text and OCR output with Qdrant, and answers questions with citations through Ollama-backed models.",
+    tech: ["Python", "FastAPI", "React", "Qdrant", "Ollama"],
+    github: "https://github.com/giannisCKS/DocScrape",
     demo: null,
   },
   {
@@ -67,15 +83,25 @@ const projectThemes: Record<
     accent: "rgba(195, 194, 163, 0.92)",
     accentSoft: "rgba(195, 194, 163, 0.22)",
   },
+  "Gerakofolia Villa": {
+    eyebrow: "Hospitality Website",
+    accent: "rgba(20, 184, 166, 0.92)",
+    accentSoft: "rgba(20, 184, 166, 0.2)",
+  },
   ProLink: {
     eyebrow: "Service Platform",
     accent: "rgba(59, 130, 246, 0.92)",
     accentSoft: "rgba(59, 130, 246, 0.2)",
   },
+  DocScrape: {
+    eyebrow: "Document Reasoning",
+    accent: "rgba(245, 158, 11, 0.92)",
+    accentSoft: "rgba(245, 158, 11, 0.2)",
+  },
   ASAC: {
     eyebrow: "Security Research CLI",
-    accent: "rgba(20, 184, 166, 0.92)",
-    accentSoft: "rgba(20, 184, 166, 0.2)",
+    accent: "rgba(14, 165, 233, 0.92)",
+    accentSoft: "rgba(14, 165, 233, 0.2)",
   },
 };
 
@@ -314,9 +340,7 @@ export default function Home() {
     const nextTheme =
       storedTheme === "light" || storedTheme === "dark"
         ? storedTheme
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        : "light";
 
     const frameId = window.requestAnimationFrame(() => {
       setTheme(nextTheme);
@@ -348,11 +372,6 @@ export default function Home() {
           animate="visible"
         >
           <div className="space-y-8 text-left">
-            <motion.div variants={fadeUp} className="hero-badge">
-              <span className="theme-accent-fill h-2.5 w-2.5 rounded-full" />
-              Software Developer & Full-Stack Engineer
-            </motion.div>
-
             <motion.h1
               variants={fadeUp}
               className="theme-text-strong max-w-4xl text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl md:text-7xl"
@@ -527,15 +546,13 @@ export default function Home() {
             variants={staggerContainer}
             className="project-console mt-16"
           >
-            {projects.map((project, index) => {
+            {projects.map((project) => {
               const theme = projectThemes[project.title];
-              const isFeatured = project.title === "ASAC";
               const isActive = hoveredProject === project.title;
               const isDimmed = hoveredProject !== null && !isActive;
               const panelStyle = {
                 "--project-accent": theme.accent,
                 "--project-accent-soft": theme.accentSoft,
-                order: isFeatured ? -1 : index,
               } as CSSProperties;
 
               return (
@@ -548,9 +565,7 @@ export default function Home() {
                   onMouseLeave={() => setHoveredProject(null)}
                   animate={{ opacity: isDimmed ? 0.58 : 1 }}
                   transition={{ duration: 0.18 }}
-                  className={`project-console-card ${
-                    isFeatured ? "project-console-card-featured" : ""
-                  }`}
+                  className="project-console-card"
                   style={panelStyle}
                 >
                   <div className="project-console-topline">
@@ -563,23 +578,11 @@ export default function Home() {
                         {theme.eyebrow}
                       </span>
                     </div>
-                    <span className="project-console-index">
-                      PRJ-{String(index + 1).padStart(2, "0")}
-                    </span>
                   </div>
 
                   <div className="project-console-body">
                     <div className="space-y-4">
                       <div>
-                        <span
-                          className="project-console-status"
-                          style={{
-                            borderColor: theme.accentSoft,
-                            color: theme.accent,
-                          }}
-                        >
-                          {isFeatured ? "Featured / Local-first" : "Selected work"}
-                        </span>
                         <h3 className="project-console-title theme-text-strong">
                           {project.title}
                         </h3>

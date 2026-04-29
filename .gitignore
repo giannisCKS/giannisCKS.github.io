@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-
+.codesight/
 # next.js
 /.next/
 /out/
