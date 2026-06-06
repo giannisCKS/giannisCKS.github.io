@@ -1,6 +1,6 @@
 # giannisCKS.github.io
 
-Personal portfolio website of **Giannis Papakostas** — Software Developer & Engineer.
+Personal portfolio website
 
 Live at: [giannisCKS.github.io](https://giannisCKS.github.io)
 
