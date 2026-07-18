@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
+  weight: ["300", "400", "600", "700"],
   display: "swap",
+  variable: "--font-source-sans-3",
 });
 
 export const metadata: Metadata = {
-  title: "Giannis Papakostas | Software Developer & Engineer",
+  title:
+    "Ioannis Papakostas | Full-Stack Developer | Internal Tools, Automation & Business Systems",
   description:
-    "Personal portfolio of Giannis Papakostas — a software developer and engineer specializing in full-stack web applications and robust backend systems.",
+    "Portfolio of Ioannis Papakostas — a full-stack developer building secure business platforms, internal tools, and workflow automation with TypeScript, React/Next.js, Python/FastAPI, SQL, and AI-assisted development.",
   openGraph: {
-    title: "Giannis Papakostas | Software Developer & Engineer",
+    title: "Ioannis Papakostas | Full-Stack Developer",
     description:
-      "Personal portfolio of Giannis Papakostas — software developer and engineer.",
+      "Portfolio of Ioannis Papakostas — full-stack developer focused on internal tools, automation, and business systems.",
     type: "website",
   },
 };
@@ -25,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+    <html lang="en" className={`${sourceSans.variable} scroll-smooth`}>
+      <body className={`${sourceSans.className} antialiased`}>{children}</body>
     </html>
   );
 }

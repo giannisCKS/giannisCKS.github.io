@@ -1,134 +1,197 @@
 "use client";
 
-import { CSSProperties, useEffect, useState } from "react";
-import { motion, Variants } from "framer-motion";
-import ParticlesBackground from "./ParticlesBackground";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { motion } from "framer-motion";
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+type Theme = "light" | "dark";
 
-const projects: {
+type IconComponent = React.ComponentType<{ className?: string }>;
+
+interface Skill {
+  label: string;
+  items: string;
+  icon: IconComponent;
+}
+
+interface Experience {
+  role: string;
+  company: string;
+  dates: string;
+  location: string;
+  bullets: string[];
+}
+
+interface Project {
   title: string;
   description: string;
   tech: string[];
-  github: string;
-  demo: string | null;
-}[] = [
-  {
-    title: "Dancefolklore.gr",
-    description:
-      "A specialized Greek web platform dedicated to documenting Greek traditional dance, costumes, and folklore.",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
-    github: "https://github.com/raptisfolklore/dancefolklore",
-    demo: "https://dancefolklore.gr",
-  },
-  {
-    title: "Gerakofolia Villa",
-    description:
-      "A bilingual marketing site for a private sea-view villa in Nikiana, Lefkada, with localized pages, gallery content, and direct booking contact flows.",
-    tech: ["Next.js", "React", "TypeScript", "Cloudflare Pages"],
-    github: "https://github.com/giannisCKS/gerakofolia",
-    demo: "https://gerakofolia-villa.gr/",
-  },
-  {
-    title: "ProLink",
-    description:
-      "A hyper-local service marketplace connecting clients and vetted professionals in real-time, featuring a Next.js REST API and Flutter mobile app.",
-    tech: ["Next.js", "TypeScript", "Flutter", "Prisma", "PostgreSQL"],
-    github: "https://github.com/giannisCKS/ProLink",
-    demo: null,
-  },
-  {
-    title: "DocScrape",
-    description:
-      "A local PDF reasoning workspace that watches document folders, indexes text and OCR output with Qdrant, and answers questions with citations through Ollama-backed models.",
-    tech: ["Python", "FastAPI", "React", "Qdrant", "Ollama"],
-    github: "https://github.com/giannisCKS/DocScrape",
-    demo: null,
-  },
-  {
-    title: "ASAC",
-    description:
-      "A local-first Node.js/TypeScript CLI for running a professional penetration research assistant inside an isolated Podman pod with Ollama-backed inference, explicit import/export flows, and offline-by-default networking.",
-    tech: ["Node.js", "TypeScript", "Podman", "Ollama", "Security CLI"],
-    github: "https://github.com/giannisCKS/ASAC",
-    demo: null,
-  },
-];
-
-const skills = [
-  { label: "Languages", value: "TypeScript, Python, Go, JavaScript, Java, Flutter" },
-  { label: "Frontend", value: "React, Next.js, Tailwind CSS, HTML/CSS" },
-  { label: "Backend", value: "Node.js, FastAPI, REST APIs, GraphQL" },
-  { label: "DevOps", value: "Podman, Kubernetes, CI/CD, AWS" },
-];
+  live: string | null;
+  github: string | null;
+  image: string;
+}
 
 const navLinks = [
   { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
   { href: "#projects", label: "Projects" },
   { href: "#contact", label: "Contact" },
 ];
 
-type Theme = "light" | "dark";
-
-const projectThemes: Record<
-  string,
+const skills: Skill[] = [
   {
-    eyebrow: string;
-    accent: string;
-    accentSoft: string;
-  }
-> = {
-  "Dancefolklore.gr": {
-    eyebrow: "Cultural Archive",
-    accent: "rgba(195, 194, 163, 0.92)",
-    accentSoft: "rgba(195, 194, 163, 0.22)",
+    label: "Full Stack",
+    items:
+      "TypeScript, JavaScript, React, Next.js, Tailwind CSS, Node.js, Python, FastAPI, REST APIs",
+    icon: CodeIcon,
   },
-  "Gerakofolia Villa": {
-    eyebrow: "Hospitality Website",
-    accent: "rgba(20, 184, 166, 0.92)",
-    accentSoft: "rgba(20, 184, 166, 0.2)",
+  {
+    label: "Data & Platforms",
+    items:
+      "PostgreSQL, Supabase, PostGIS, Qdrant, SQLite/D1, Cloudflare Pages/Workers/R2/D1, Vercel, GitHub Actions",
+    icon: DatabaseIcon,
   },
-  ProLink: {
-    eyebrow: "Service Platform",
-    accent: "rgba(59, 130, 246, 0.92)",
-    accentSoft: "rgba(59, 130, 246, 0.2)",
+  {
+    label: "Business Systems & Automation",
+    items:
+      "Role-based dashboards, notifications, approval flows, audit logging, payment flows, webhooks",
+    icon: GearsIcon,
   },
-  DocScrape: {
-    eyebrow: "Document Reasoning",
-    accent: "rgba(245, 158, 11, 0.92)",
-    accentSoft: "rgba(245, 158, 11, 0.2)",
+  {
+    label: "AI & Workflow Systems",
+    items:
+      "Claude Code, OpenAI Codex, OpenCode, local LLMs, Ollama/Llama, retrieval workflows, OCR pipelines",
+    icon: RobotIcon,
   },
-  ASAC: {
-    eyebrow: "Security Research CLI",
-    accent: "rgba(14, 165, 233, 0.92)",
-    accentSoft: "rgba(14, 165, 233, 0.2)",
+  {
+    label: "Infrastructure & Security",
+    items:
+      "Linux, Podman, containers, secure access patterns, GDPR-aware design, incident triage",
+    icon: ShieldIcon,
   },
-};
+  {
+    label: "Languages",
+    items: "Greek (Native), English (Professional)",
+    icon: GlobeIcon,
+  },
+];
 
-// ─── Animations ───────────────────────────────────────────────────────────────
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-    },
+const experiences: Experience[] = [
+  {
+    role: "Freelance Full Stack Developer & IT Support",
+    company: "Small Businesses",
+    dates: "2023–Present",
+    location: "Ioannina, Greece",
+    bullets: [
+      "Delivered full-stack websites, internal tooling, and tech ops for small businesses.",
+      "Translated operational needs into scoped technical solutions.",
+      "Diagnosed Windows, Linux, and SaaS incidents.",
+      "Applied security and GDPR-aware practices.",
+    ],
   },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+  {
+    role: "E-Commerce Systems Developer & Operations",
+    company: "ragefactory.gr",
+    dates: "2020–2022",
+    location: "Ioannina, Greece",
+    bullets: [
+      "Owned reliability of the business-critical e-commerce storefront during COVID.",
+      "Resolved front-end faults, product-data inconsistencies, and transactional friction.",
+      "Worked across WordPress and OpenCart stacks.",
+    ],
   },
-};
+  {
+    role: "Plugin Developer & Technical Admin",
+    company: "GameforceGreece / MellonGR",
+    dates: "2015–2017",
+    location: "Remote",
+    bullets: [
+      "Built plugins and community tooling.",
+      "Administered live services with permission controls and incident triage.",
+    ],
+  },
+];
 
-// ─── GitHub SVG ───────────────────────────────────────────────────────────────
+const projects: Project[] = [
+  {
+    title: "Spatia",
+    description:
+      "Marketplace and operations platform for venue discovery, booking, provider coordination, and payment flows. Role-specific dashboards, RLS, and Stripe Connect.",
+    tech: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Tailwind",
+      "Supabase",
+      "PostgreSQL",
+      "PostGIS",
+    ],
+    live: "https://spatia-market.vercel.app",
+    github: null,
+    image:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    title: "Dancefolklore.gr",
+    description:
+      "Bilingual content, product, and admin operations platform for traditional Greek dance and folklore.",
+    tech: [
+      "React",
+      "TypeScript",
+      "Cloudflare Pages",
+      "Workers",
+      "D1",
+      "R2",
+      "Hono",
+    ],
+    live: "https://dancefolklore.gr",
+    github: "https://github.com/raptisfolklore/dancefolklore",
+    image:
+      "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    title: "Gerakofolia Villa",
+    description:
+      "Tourism booking and presentation website with responsive UI, property content, and enquiry support.",
+    tech: ["Next.js", "React", "TypeScript", "Cloudflare Pages"],
+    live: "https://gerakofolia-villa.gr",
+    github: "https://github.com/giannisCKS/gerakofolia",
+    image:
+      "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    title: "DocScrape",
+    description:
+      "Local AI document intelligence system: monitors folders, OCR, Qdrant indexing, and citation-backed answers via local Llama.",
+    tech: ["Python", "FastAPI", "React", "Qdrant", "Ollama"],
+    live: null,
+    github: "https://github.com/giannisCKS/DocScrape",
+    image:
+      "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    title: "ASAC",
+    description:
+      "Isolated AI research CLI with Node.js/TypeScript, Podman containers, private networking, and local Llama.",
+    tech: ["Node.js", "TypeScript", "Podman", "Ollama"],
+    live: null,
+    github: "https://github.com/giannisCKS/ASAC",
+    image:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    title: "AI Runner & Agent Workflow Tooling",
+    description:
+      "Local engineering execution and review support, routing Claude Code, OpenAI Codex, OpenCode, Hermes, and OpenClaw through repeatable workflows.",
+    tech: ["TypeScript", "Local LLMs", "Agent Workflows", "CLI"],
+    live: null,
+    github: null,
+    image:
+      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80",
+  },
+];
+
+
+// ─── Icons ──────────────────────────────────────────────────────────────────
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -143,29 +206,198 @@ function GitHubIcon({ className }: { className?: string }) {
   );
 }
 
-// ─── Navbar component ───────────────────────────────────────────────────────────
+function CodeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="m16 18 6-6-6-6" />
+      <path d="m8 6-6 6 6 6" />
+    </svg>
+  );
+}
+
+function DatabaseIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+      <path d="M3 12a9 3 0 0 0 18 0" />
+    </svg>
+  );
+}
+
+function GearsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
+function RobotIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <path d="M12 5v6" />
+      <circle cx="12" cy="5" r="2" />
+      <path d="M8 15h.01" />
+      <path d="M16 15h.01" />
+    </svg>
+  );
+}
+
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+function EmailIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <path d="m22 6-10 7L2 6" />
+    </svg>
+  );
+}
+
+function WebsiteIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  );
+}
+
+function LocationIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+// ─── Shared components ───────────────────────────────────────────────────────
 
 function ThemeToggleButton({
   theme,
   onClick,
-  className,
 }: {
   theme: Theme;
   onClick: () => void;
-  className?: string;
 }) {
   const isDark = theme === "dark";
-
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`theme-toggle ${className ?? ""}`.trim()}
+      className="theme-toggle"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       aria-pressed={isDark}
     >
       {isDark ? (
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -174,7 +406,13 @@ function ThemeToggleButton({
           />
         </svg>
       ) : (
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -188,649 +426,706 @@ function ThemeToggleButton({
   );
 }
 
+function NextButton({
+  onClick,
+  label,
+}: {
+  onClick: () => void;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="next-button"
+      onClick={onClick}
+      aria-label={label ?? "Next panel"}
+    >
+      <svg
+        className="next-button-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M9 18l6-6-6-6" />
+      </svg>
+    </button>
+  );
+}
+
+function BackButton({
+  onClick,
+  label,
+}: {
+  onClick: () => void;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="next-button"
+      onClick={onClick}
+      aria-label={label ?? "Previous panel"}
+    >
+      <svg
+        className="next-button-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+  );
+}
+
 function Navbar({
   theme,
   onToggleTheme,
+  scrolled,
+  menuOpen,
+  setMenuOpen,
 }: {
   theme: Theme;
   onToggleTheme: () => void;
+  scrolled: boolean;
+  menuOpen: boolean;
+  setMenuOpen: (value: boolean) => void;
 }) {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "theme-nav-shell theme-nav-shell-scrolled py-3" : "py-5"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        <a
-          href="#"
-          className="theme-brand text-xl font-bold tracking-tight transition-colors"
-        >
-          Giannis Papakostas
-        </a>
-
-        {/* Desktop nav */}
-        <ul className="hidden md:flex gap-8 items-center">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="theme-nav-link text-sm font-medium transition-colors duration-200"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-          <li>
-            <a
-              href="https://github.com/giannisCKS"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="theme-nav-button text-sm font-medium"
-            >
-              <GitHubIcon className="w-4 h-4" />
-              GitHub
-            </a>
-          </li>
-          <li>
-            <ThemeToggleButton theme={theme} onClick={onToggleTheme} />
-          </li>
-        </ul>
-
-        {/* Mobile hamburger */}
-        <button
-          className="theme-nav-link md:hidden transition-colors p-1"
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label="Toggle menu"
-          aria-expanded={menuOpen}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            {menuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            )}
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
-          menuOpen ? "max-h-72 border-t theme-border-color" : "max-h-0"
-        }`}
-      >
-        <div className="theme-menu-surface px-6 py-4">
-          <ul className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="theme-nav-link text-sm font-medium transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href="https://github.com/giannisCKS"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="theme-nav-link flex items-center gap-2 text-sm font-medium transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                <GitHubIcon className="w-4 h-4" />
-                GitHub
-              </a>
-            </li>
-            <li>
-              <ThemeToggleButton
-                theme={theme}
-                onClick={() => {
-                  onToggleTheme();
-                  setMenuOpen(false);
-                }}
-                className="w-full justify-center"
-              />
-            </li>
-          </ul>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
-
-// ─── Main component ───────────────────────────────────────────────────────────
-
-export default function Home() {
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const storedTheme = window.localStorage.getItem("theme");
-    const nextTheme =
-      storedTheme === "light" || storedTheme === "dark"
-        ? storedTheme
-        : "light";
-
-    const frameId = window.requestAnimationFrame(() => {
-      setTheme(nextTheme);
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((current) => (current === "dark" ? "light" : "dark"));
+  const scrollToPanel = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
-    <main className="theme-main min-h-screen overflow-x-hidden relative">
-      <ParticlesBackground activeProject={hoveredProject} theme={theme} />
-      {/* ── Navigation ── */}
-      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+    <nav
+      className={`nav ${scrolled ? "nav-scrolled" : ""}`}
+      aria-label="Main navigation"
+    >
+      <a
+        href="#banner"
+        className="nav-brand"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToPanel("banner");
+        }}
+      >
+        Ioannis Papakostas
+      </a>
 
-      {/* ── Hero ── */}
-      <section className="hero-stage min-h-screen px-6 pt-28 pb-16">
-        <motion.div
-          className="hero-shell mx-auto grid max-w-6xl items-end gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.7fr)]"
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="space-y-8 text-left">
-            <motion.h1
-              variants={fadeUp}
-              className="theme-text-strong max-w-4xl text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl md:text-7xl"
-            >
-              Giannis
-              <br />
-              Papakostas
-            </motion.h1>
-
-            <motion.p
-              variants={fadeUp}
-              className="theme-text max-w-2xl text-base leading-8 md:text-lg"
-            >
-              Crafting scalable, high-quality software with clean architecture
-              and attention to detail. Passionate about great user experiences.
-            </motion.p>
-
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-col gap-4 sm:flex-row"
-            >
-              <a
-                href="#projects"
-                className="theme-button-primary inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5"
-              >
-                View Projects
-              </a>
-              <a
-                href="#contact"
-                className="theme-button-secondary inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold transition-all"
-              >
-                Contact Me
-              </a>
-            </motion.div>
-          </div>
-
-          <motion.div
-            variants={fadeUp}
-            data-glass="true"
-            className="hero-aside"
+      <div className="nav-links">
+        {navLinks.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className="nav-link"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToPanel(link.href.slice(1));
+            }}
           >
-            <div className="space-y-5">
-              <div>
-                <p className="theme-text-faint text-xs font-semibold uppercase tracking-[0.32em]">
-                  Focus Areas
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {skills.slice(0, 3).map((skill) => (
-                    <span key={skill.label} className="hero-chip">
-                      {skill.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="hero-rule" />
-
-              <div className="space-y-3">
-                <p className="theme-text-muted text-sm font-semibold uppercase tracking-[0.22em]">
-                  Build Style
-                </p>
-                <p className="theme-text text-sm leading-7">
-                  Clean systems, dependable APIs, thoughtful interfaces, and
-                  product-minded execution across the stack.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── About ── */}
-      <section id="about" className="py-20 px-6 bg-transparent">
-        <motion.div
-          className="max-w-6xl mx-auto"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={staggerContainer}
+            {link.label}
+          </a>
+        ))}
+        <a
+          href="https://github.com/giannisCKS"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-button"
         >
-          <SectionHeading title="About Me" subtitle="Professional Background" />
+          <GitHubIcon className="w-4 h-4" />
+          <span>GitHub</span>
+        </a>
+        <ThemeToggleButton theme={theme} onClick={onToggleTheme} />
+      </div>
 
-          <div className="grid md:grid-cols-5 gap-12 items-start mt-16">
-            {/* Bio */}
-            <motion.div
-              variants={fadeUp}
-              data-glass="true"
-              className="editorial-sheet md:col-span-3"
+      <button
+        type="button"
+        className="hamburger"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+        aria-expanded={menuOpen}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          {menuOpen ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          )}
+        </svg>
+      </button>
+
+      {menuOpen && (
+        <div className="mobile-menu">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="nav-link"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToPanel(link.href.slice(1));
+                setMenuOpen(false);
+              }}
             >
-              <div className="theme-divider flex flex-wrap items-center justify-between gap-4 border-b pb-5">
-                <p className="theme-text-faint text-xs font-semibold uppercase tracking-[0.32em]">
-                  Bio
-                </p>
-                <p className="theme-text-faint text-xs font-medium uppercase tracking-[0.28em]">
-                  Systems + UX
-                </p>
-              </div>
-              <p className="theme-text leading-relaxed text-base">
-                I&apos;m a passionate software developer with a strong
-                foundation in building scalable web applications and robust
-                backend systems. I thrive at the intersection of clean code,
-                thoughtful architecture, and great user experience.
-              </p>
-              <p className="theme-text-muted leading-relaxed text-base">
-                With experience across the full stack, I enjoy turning complex
-                problems into elegant solutions. Whether it&apos;s crafting
-                pixel-perfect UIs or designing efficient APIs, I bring attention
-                to detail and a drive for excellence to every project.
-              </p>
-              <p className="theme-text-muted leading-relaxed text-base">
-                When I&apos;m not coding, I&apos;m exploring new technologies,
-                contributing to open-source projects, and continuously
-                sharpening my skills.
-              </p>
-
-              <div className="pt-4">
-                <a
-                  href="https://github.com/giannisCKS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="theme-link inline-flex items-center gap-2 text-sm font-medium transition-colors"
-                >
-                  View my GitHub profile →
-                </a>
-              </div>
-            </motion.div>
-
-            {/* Skills grid */}
-            <motion.div
-              variants={staggerContainer}
-              className="md:col-span-2 space-y-4"
-            >
-              {skills.map((skill, index) => (
-                <motion.div
-                  key={skill.label}
-                  variants={fadeUp}
-                  data-glass="true"
-                  className="skill-ribbon"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="theme-accent-text mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em]">
-                        {skill.label}
-                      </p>
-                      <p className="theme-text text-sm leading-relaxed">
-                        {skill.value}
-                      </p>
-                    </div>
-                    <span className="theme-text-faint text-xs font-semibold uppercase tracking-[0.26em]">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── Projects ── */}
-      <section id="projects" className="py-20 px-6 bg-transparent">
-        <motion.div
-          className="max-w-6xl mx-auto"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={staggerContainer}
-        >
-          <SectionHeading title="Projects" subtitle="Featured Work" />
-
-          <motion.div
-            variants={staggerContainer}
-            className="project-console mt-16"
+              {link.label}
+            </a>
+          ))}
+          <a
+            href="https://github.com/giannisCKS"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-button"
+            onClick={() => setMenuOpen(false)}
           >
-            {projects.map((project) => {
-              const theme = projectThemes[project.title];
-              const isActive = hoveredProject === project.title;
-              const isDimmed = hoveredProject !== null && !isActive;
-              const panelStyle = {
-                "--project-accent": theme.accent,
-                "--project-accent-soft": theme.accentSoft,
-              } as CSSProperties;
-
-              return (
-                <motion.div
-                  key={project.title}
-                  variants={fadeUp}
-                  whileHover={{ y: -8 }}
-                  data-glass="true"
-                  onMouseEnter={() => setHoveredProject(project.title)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                  animate={{ opacity: isDimmed ? 0.58 : 1 }}
-                  transition={{ duration: 0.18 }}
-                  className="project-console-card"
-                  style={panelStyle}
-                >
-                  <div className="project-console-topline">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span
-                        className="project-console-led"
-                        style={{ backgroundColor: theme.accent }}
-                      />
-                      <span className="project-console-eyebrow">
-                        {theme.eyebrow}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="project-console-body">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="project-console-title theme-text-strong">
-                          {project.title}
-                        </h3>
-                      </div>
-
-                      <p className="project-console-description theme-text">
-                        {project.description}
-                      </p>
-
-                      <div className="project-console-tags">
-                        {project.tech.map((t) => (
-                          <span
-                            key={t}
-                            className="theme-tag project-console-tag"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="project-console-actions theme-divider">
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="theme-button-secondary project-console-link"
-                      >
-                        <GitHubIcon className="w-4 h-4" />
-                        Repository
-                      </a>
-                      {project.demo && (
-                        <a
-                          href={project.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="theme-accent-button project-console-link"
-                          style={{
-                            borderColor: theme.accentSoft,
-                            color: theme.accent,
-                          }}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
-                          Live Demo
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── Contact ── */}
-      <section id="contact" className="py-20 px-6 bg-transparent">
-        <motion.div
-          className="max-w-4xl mx-auto text-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={staggerContainer}
-        >
-          <motion.div variants={fadeUp}>
-            <SectionHeading
-              title="Get In Touch"
-              subtitle="Contact Information"
-            />
-
-            <p className="theme-text mt-8 mb-12 leading-relaxed text-base">
-              I&apos;m always open to new opportunities, collaborations, and
-              interesting conversations. Whether you have a project in mind or
-              just want to say hi — feel free to reach out!
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            className="grid gap-4 sm:grid-cols-3"
-          >
-            {/* GitHub */}
-            <ContactCard
-              href="https://github.com/giannisCKS"
-              external
-              label="GitHub"
-              description="@giannisCKS"
-              icon={<GitHubIcon className="w-6 h-6" />}
-              variants={fadeUp}
-            />
-
-            {/* Email */}
-            <ContactCard
-              href="mailto:giannis2k@icloud.com"
-              external={false}
-              label="Email"
-              description="Send a message"
-              icon={
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              }
-              variants={fadeUp}
-            />
-
-            {/* LinkedIn */}
-            <ContactCard
-              href="https://linkedin.com"
-              external
-              label="LinkedIn"
-              description="Connect with me"
-              icon={
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-              }
-              variants={fadeUp}
-            />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className="theme-footer py-8 px-6 border-t bg-transparent">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="theme-text text-sm">
-            © {new Date().getFullYear()} Giannis Papakostas. All rights
-            reserved.
-          </p>
-          <p className="theme-text-faint text-xs">
-            Built with Next.js & Tailwind CSS
-          </p>
+            <GitHubIcon className="w-4 h-4" />
+            <span>GitHub</span>
+          </a>
+          <ThemeToggleButton
+            theme={theme}
+            onClick={() => {
+              onToggleTheme();
+              setMenuOpen(false);
+            }}
+          />
         </div>
-      </footer>
-    </main>
+      )}
+    </nav>
   );
 }
 
-// ─── Section heading component ────────────────────────────────────────────────
-
-function SectionHeading({
-  title,
-  subtitle,
+function PanelImage({
+  src,
+  alt,
+  className,
 }: {
-  title: string;
-  subtitle?: string;
+  src: string;
+  alt: string;
+  className?: string;
 }) {
   return (
-    <div className="section-heading text-center">
-      {subtitle && (
-        <motion.p
-          variants={fadeUp}
-          className="section-heading-subtitle"
-        >
-          {subtitle}
-        </motion.p>
-      )}
-      <motion.h2
-        variants={fadeUp}
-        className="section-heading-title"
-      >
-        {title}
-      </motion.h2>
+    <div className={`image ${className ?? ""}`} role="img" aria-label={alt}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} loading="lazy" />
     </div>
   );
 }
 
-// ─── Contact card component ───────────────────────────────────────────────────
+function SkillIcon({ skill }: { skill: Skill }) {
+  const Icon = skill.icon;
+  return (
+    <div className="grid-icon-item">
+      <div className="grid-icon-circle">
+        <Icon className="w-8 h-8" />
+      </div>
+      <span className="grid-icon-label">{skill.label}</span>
+    </div>
+  );
+}
 
-function ContactCard({
+function ProjectCard({ project }: { project: Project }) {
+  return (
+    <article className="gallery-item">
+      <div className="gallery-thumb" role="img" aria-label={`${project.title} thumbnail`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={project.image} alt={`${project.title} thumbnail`} loading="lazy" />
+      </div>
+      <div className="gallery-body">
+        <h3 className="gallery-title">{project.title}</h3>
+        <p className="text-sm leading-relaxed opacity-90">
+          {project.description}
+        </p>
+        <div className="gallery-tags">
+          {project.tech.map((tag) => (
+            <span key={tag} className="tech-tag">
+              {tag}
+            </span>
+          ))}
+        </div>
+        <div className="gallery-links">
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="button"
+            >
+              <GitHubIcon className="w-3.5 h-3.5" />
+              <span className="sr-only">GitHub repository for {project.title}</span>
+              <span aria-hidden="true">GitHub</span>
+            </a>
+          )}
+          {project.live && (
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="button button-primary"
+            >
+              Live Demo
+            </a>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ContactRow({
   href,
-  external,
+  icon: Icon,
+  iconClass,
   label,
-  description,
-  icon,
-  variants,
+  value,
+  external,
 }: {
   href: string;
-  external: boolean;
+  icon: IconComponent;
+  iconClass: string;
   label: string;
-  description: string;
-  icon: React.ReactNode;
-  variants?: Variants;
+  value: string;
+  external?: boolean;
 }) {
   return (
-    <motion.a
+    <a
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      variants={variants}
-      whileHover={{ y: -8 }}
-      data-glass="true"
-      className="contact-rail group"
+      className="contact-item"
     >
-      <div className="contact-rail-icon">
-        <div className="theme-icon transition-colors">
-          {icon}
-        </div>
+      <span className={`contact-icon ${iconClass}`}>
+        <Icon className="w-4 h-4" />
+      </span>
+      <div>
+        <div className="contact-label">{label}</div>
+        <div className="contact-value">{value}</div>
       </div>
-      <div className="min-w-0 flex-1 text-left">
-        <p className="theme-text-faint text-[0.68rem] font-semibold uppercase tracking-[0.3em]">
-          {label}
-        </p>
-        <p className="contact-rail-title mt-2 text-sm font-semibold transition-colors">
-          {description}
-        </p>
-      </div>
-      <div className="contact-rail-arrow" aria-hidden="true">
-        <svg
-          className="h-4 w-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.8}
-            d="M5 12h14m-5-5l5 5-5 5"
+    </a>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
+
+function getStoredTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  const stored = window.localStorage.getItem("theme");
+  return stored === "light" ? "light" : "dark";
+}
+
+function subscribeTheme(callback: () => void) {
+  const handler = (event: StorageEvent) => {
+    if (event.key === "theme") callback();
+  };
+  window.addEventListener("storage", handler);
+  return () => window.removeEventListener("storage", handler);
+}
+
+export default function Home() {
+  const theme = useSyncExternalStore<Theme>(
+    subscribeTheme,
+    getStoredTheme,
+    () => "dark",
+  );
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const panelsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    window.localStorage.setItem("theme", next);
+    document.documentElement.dataset.theme = next;
+    window.dispatchEvent(new StorageEvent("storage", { key: "theme" }));
+  };
+
+  const handlePanelsScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    setScrolled(target.scrollTop > 20 || target.scrollLeft > 20);
+  };
+
+  const scrollToPanel = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(
+      `Message from ${form.name || "website visitor"}`,
+    );
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`,
+    );
+    window.location.href = `mailto:giannispapakostas2k@gmail.com?subject=${subject}&body=${body}`;
+  };
+
+  return (
+    <>
+      <Navbar
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        scrolled={scrolled}
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+      />
+
+      <main className="panels" ref={panelsRef} onScroll={handlePanelsScroll}>
+        {/* Panel 1 — Banner */}
+        <section id="banner" className="panel panel-right">
+          <div className="panel-inner">
+            <motion.div
+              className="content span-3-75"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h1 className="heading-1 major">
+                Hello, my name is Ioannis Papakostas
+              </h1>
+              <p className="text-lg mb-4">
+                Full-Stack Developer | Internal Tools, Automation & Business
+                Systems
+              </p>
+              <p className="mb-8 opacity-90">
+                AI-native developer with 8+ years across web, e-commerce, ops,
+                and internal tooling. I translate messy operational problems
+                into maintainable systems that reduce manual work and improve
+                day-to-day execution.
+              </p>
+            </motion.div>
+            <PanelImage
+              src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80"
+              alt="Moody mountain landscape for the banner panel"
+              className="span-1-75"
+            />
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("about")}
+            label="Scroll to About panel"
           />
-        </svg>
-      </div>
-    </motion.a>
+        </section>
+
+        {/* Panel 2 — About */}
+        <section id="about" className="panel panel-right spotlight">
+          <div className="panel-inner">
+            <motion.div
+              className="content span-7"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="heading-2 major">About</h2>
+              <p className="mb-6">
+                AI-native full-stack developer with 8+ years of hands-on
+                experience across web development, e-commerce systems,
+                technical operations, and internal tooling. Builds secure
+                business platforms and workflow automation from stakeholder
+                discovery through deployment using TypeScript, React/Next.js,
+                Python/FastAPI, SQL, Supabase/PostgreSQL, and AI-assisted
+                development workflows.
+              </p>
+              <p className="mb-6">
+                Experienced translating ambiguous operational problems into
+                maintainable tools that reduce manual work and improve
+                day-to-day execution.
+              </p>
+              <p className="text-sm opacity-80">
+                BSc Informatics & Telecommunications, University of Ioannina
+                (Expected 2026) · Ioannina, Greece
+              </p>
+            </motion.div>
+            <PanelImage
+              src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
+              alt="Workspace with code for the about panel"
+              className="span-3"
+            />
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("skills")}
+            label="Scroll to Skills panel"
+          />
+        </section>
+
+        {/* Panel 3 — Skills */}
+        <section id="skills" className="panel panel-color1">
+          <div className="panel-inner flex-col items-center text-center">
+            <motion.div
+              className="content max-w-3xl"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="heading-2 major">Skills</h2>
+              <p className="mb-12">
+                A practical toolkit spanning the full stack, data platforms,
+                business automation, AI-assisted workflows, and secure
+                infrastructure.
+              </p>
+            </motion.div>
+            <motion.div
+              className="grid-icons"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              {skills.map((skill) => (
+                <SkillIcon key={skill.label} skill={skill} />
+              ))}
+            </motion.div>
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("experience")}
+            label="Scroll to Experience panel"
+          />
+        </section>
+
+        {/* Panel 4 — Experience */}
+        <section id="experience" className="panel panel-left spotlight">
+          <div className="panel-inner">
+            <PanelImage
+              src="https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1200&q=80"
+              alt="Moody city road for the experience panel"
+              className="span-5"
+            />
+            <motion.div
+              className="content span-5"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="heading-2 major">Experience</h2>
+              {experiences.map((exp) => (
+                <div key={exp.role} className="mb-8">
+                  <h3 className="heading-3">{exp.role}</h3>
+                  <p className="text-sm font-semibold opacity-90 mb-1">
+                    {exp.company} · {exp.dates}
+                  </p>
+                  <p className="text-sm opacity-75 mb-3">{exp.location}</p>
+                  <ul className="space-y-2">
+                    {exp.bullets.map((bullet) => (
+                      <li key={bullet} className="text-sm opacity-85">
+                        • {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("projects")}
+            label="Scroll to Projects panel"
+          />
+        </section>
+
+        {/* Panel 5 — Projects */}
+        <section id="projects" className="panel">
+          <div className="w-full max-w-[1200px]">
+            <motion.div
+              className="panel-color2 rounded-t-lg p-8"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="heading-2 major">Projects</h2>
+              <p>
+                Selected builds across marketplaces, content platforms, local
+                AI tooling, and automation workflows.
+              </p>
+            </motion.div>
+            <motion.div
+              className="p-8"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <div className="gallery">
+                {projects.map((project) => (
+                  <ProjectCard key={project.title} project={project} />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("contact")}
+            label="Scroll to Contact panel"
+          />
+        </section>
+
+        {/* Panel 6 — Contact */}
+        <section id="contact" className="panel panel-color4-alt">
+          <div className="panel-inner">
+            <motion.div
+              className="content span-3-25"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h2 className="heading-2 major">Contact</h2>
+              <p className="mb-8">
+                Have a project or operational challenge in mind? Send a message
+                and I will get back to you.
+              </p>
+              <form className="form" onSubmit={handleContactSubmit}>
+                <div className="form-field">
+                  <label htmlFor="name" className="form-label">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    className="form-input"
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                    placeholder="Your name"
+                    required
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    className="form-input"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, email: e.target.value }))
+                    }
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="message" className="form-label">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    className="form-textarea"
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, message: e.target.value }))
+                    }
+                    placeholder="Tell me about your project..."
+                    required
+                  />
+                </div>
+                <button type="submit" className="button button-primary">
+                  Send Message
+                </button>
+              </form>
+            </motion.div>
+            <motion.div
+              className="content span-1-5"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <div className="contact-list">
+                <ContactRow
+                  href="https://github.com/giannisCKS"
+                  icon={GitHubIcon}
+                  iconClass="contact-icon-purple"
+                  label="GitHub"
+                  value="github.com/giannisCKS"
+                  external
+                />
+                <ContactRow
+                  href="mailto:giannispapakostas2k@gmail.com"
+                  icon={EmailIcon}
+                  iconClass="contact-icon-salmon"
+                  label="Email"
+                  value="giannispapakostas2k@gmail.com"
+                />
+                <ContactRow
+                  href="https://giannisCKS.github.io"
+                  icon={WebsiteIcon}
+                  iconClass="contact-icon-navy"
+                  label="Website"
+                  value="giannisCKS.github.io"
+                  external
+                />
+                <ContactRow
+                  href="#contact"
+                  icon={LocationIcon}
+                  iconClass="contact-icon-cream"
+                  label="Location"
+                  value="Ioannina, Greece"
+                />
+              </div>
+            </motion.div>
+          </div>
+          <NextButton
+            onClick={() => scrollToPanel("footer")}
+            label="Scroll to footer"
+          />
+        </section>
+
+        {/* Panel 7 — Footer */}
+        <section id="footer" className="panel">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <p className="text-sm opacity-75">
+                © {new Date().getFullYear()} Ioannis Papakostas. Built with
+                Next.js & Tailwind CSS.
+              </p>
+            </motion.div>
+          </div>
+          <BackButton
+            onClick={() => scrollToPanel("contact")}
+            label="Back to Contact panel"
+          />
+        </section>
+      </main>
+    </>
   );
 }
