@@ -127,8 +127,7 @@ const projects: Project[] = [
     ],
     live: "https://spatia-market.vercel.app",
     github: null,
-    image:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/spatia.webp",
   },
   {
     title: "Dancefolklore.gr",
@@ -145,8 +144,7 @@ const projects: Project[] = [
     ],
     live: "https://dancefolklore.gr",
     github: "https://github.com/raptisfolklore/dancefolklore",
-    image:
-      "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/dancefolklore.webp",
   },
   {
     title: "Gerakofolia Villa",
@@ -155,8 +153,7 @@ const projects: Project[] = [
     tech: ["Next.js", "React", "TypeScript", "Cloudflare Pages"],
     live: "https://gerakofolia-villa.gr",
     github: "https://github.com/giannisCKS/gerakofolia",
-    image:
-      "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/gerakofolia-villa.webp",
   },
   {
     title: "DocScrape",
@@ -165,8 +162,7 @@ const projects: Project[] = [
     tech: ["Python", "FastAPI", "React", "Qdrant", "Ollama"],
     live: null,
     github: "https://github.com/giannisCKS/DocScrape",
-    image:
-      "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/docscrape.webp",
   },
   {
     title: "ASAC",
@@ -175,8 +171,7 @@ const projects: Project[] = [
     tech: ["Node.js", "TypeScript", "Podman", "Ollama"],
     live: null,
     github: "https://github.com/giannisCKS/ASAC",
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/asac.webp",
   },
   {
     title: "AI Runner & Agent Workflow Tooling",
@@ -185,11 +180,9 @@ const projects: Project[] = [
     tech: ["TypeScript", "Local LLMs", "Agent Workflows", "CLI"],
     live: null,
     github: null,
-    image:
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80",
+    image: "/projects/ai-runner.webp",
   },
 ];
-
 
 // ─── Icons ──────────────────────────────────────────────────────────────────
 
@@ -354,24 +347,6 @@ function WebsiteIcon({ className }: { className?: string }) {
   );
 }
 
-function LocationIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  );
-}
-
 // ─── Shared components ───────────────────────────────────────────────────────
 
 function ThemeToggleButton({
@@ -466,7 +441,7 @@ function BackButton({
   return (
     <button
       type="button"
-      className="next-button"
+      className="back-button"
       onClick={onClick}
       aria-label={label ?? "Previous panel"}
     >
@@ -545,6 +520,28 @@ function Navbar({
           <GitHubIcon className="w-4 h-4" />
           <span>GitHub</span>
         </a>
+        <a
+          href="/Ioannis_Papakostas_cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-button"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.8}
+              d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
+            />
+          </svg>
+          <span>Resume</span>
+        </a>
         <ThemeToggleButton theme={theme} onClick={onToggleTheme} />
       </div>
 
@@ -606,6 +603,29 @@ function Navbar({
             <GitHubIcon className="w-4 h-4" />
             <span>GitHub</span>
           </a>
+          <a
+            href="/Ioannis_Papakostas_cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-button"
+            onClick={() => setMenuOpen(false)}
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.8}
+                d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
+              />
+            </svg>
+            <span>Resume</span>
+          </a>
           <ThemeToggleButton
             theme={theme}
             onClick={() => {
@@ -616,23 +636,6 @@ function Navbar({
         </div>
       )}
     </nav>
-  );
-}
-
-function PanelImage({
-  src,
-  alt,
-  className,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-}) {
-  return (
-    <div className={`image ${className ?? ""}`} role="img" aria-label={alt}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} loading="lazy" />
-    </div>
   );
 }
 
@@ -651,9 +654,17 @@ function SkillIcon({ skill }: { skill: Skill }) {
 function ProjectCard({ project }: { project: Project }) {
   return (
     <article className="gallery-item">
-      <div className="gallery-thumb" role="img" aria-label={`${project.title} thumbnail`}>
+      <div
+        className="gallery-thumb"
+        role="img"
+        aria-label={`${project.title} thumbnail`}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={project.image} alt={`${project.title} thumbnail`} loading="lazy" />
+        <img
+          src={project.image}
+          alt={`${project.title} thumbnail`}
+          loading="lazy"
+        />
       </div>
       <div className="gallery-body">
         <h3 className="gallery-title">{project.title}</h3>
@@ -676,7 +687,9 @@ function ProjectCard({ project }: { project: Project }) {
               className="button"
             >
               <GitHubIcon className="w-3.5 h-3.5" />
-              <span className="sr-only">GitHub repository for {project.title}</span>
+              <span className="sr-only">
+                GitHub repository for {project.title}
+              </span>
               <span aria-hidden="true">GitHub</span>
             </a>
           )}
@@ -805,7 +818,7 @@ export default function Home() {
         <section id="banner" className="panel panel-right">
           <div className="panel-inner">
             <motion.div
-              className="content span-3-75"
+              className="content max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -819,17 +832,20 @@ export default function Home() {
                 Systems
               </p>
               <p className="mb-8 opacity-90">
-                AI-native developer with 8+ years across web, e-commerce, ops,
+                Full-stack developer with 8+ years across web, e-commerce, ops,
                 and internal tooling. I translate messy operational problems
                 into maintainable systems that reduce manual work and improve
                 day-to-day execution.
               </p>
+              <a
+                href="/Ioannis_Papakostas_cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="button button-primary"
+              >
+                View Resume
+              </a>
             </motion.div>
-            <PanelImage
-              src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80"
-              alt="Moody mountain landscape for the banner panel"
-              className="span-1-75"
-            />
           </div>
           <NextButton
             onClick={() => scrollToPanel("about")}
@@ -841,7 +857,7 @@ export default function Home() {
         <section id="about" className="panel panel-right spotlight">
           <div className="panel-inner">
             <motion.div
-              className="content span-7"
+              className="content max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -849,13 +865,12 @@ export default function Home() {
             >
               <h2 className="heading-2 major">About</h2>
               <p className="mb-6">
-                AI-native full-stack developer with 8+ years of hands-on
-                experience across web development, e-commerce systems,
-                technical operations, and internal tooling. Builds secure
-                business platforms and workflow automation from stakeholder
-                discovery through deployment using TypeScript, React/Next.js,
-                Python/FastAPI, SQL, Supabase/PostgreSQL, and AI-assisted
-                development workflows.
+                Full-stack developer with 8+ years of hands-on experience across
+                web development, e-commerce systems, technical operations, and
+                internal tooling. Builds secure business platforms and workflow
+                automation from stakeholder discovery through deployment using
+                TypeScript, React/Next.js, Python/FastAPI, SQL,
+                Supabase/PostgreSQL, and AI-assisted development workflows.
               </p>
               <p className="mb-6">
                 Experienced translating ambiguous operational problems into
@@ -864,15 +879,14 @@ export default function Home() {
               </p>
               <p className="text-sm opacity-80">
                 BSc Informatics & Telecommunications, University of Ioannina
-                (Expected 2026) · Ioannina, Greece
+                (Expected 2026)
               </p>
             </motion.div>
-            <PanelImage
-              src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
-              alt="Workspace with code for the about panel"
-              className="span-3"
-            />
           </div>
+          <BackButton
+            onClick={() => scrollToPanel("banner")}
+            label="Back to Banner panel"
+          />
           <NextButton
             onClick={() => scrollToPanel("skills")}
             label="Scroll to Skills panel"
@@ -908,6 +922,10 @@ export default function Home() {
               ))}
             </motion.div>
           </div>
+          <BackButton
+            onClick={() => scrollToPanel("about")}
+            label="Back to About panel"
+          />
           <NextButton
             onClick={() => scrollToPanel("experience")}
             label="Scroll to Experience panel"
@@ -917,13 +935,8 @@ export default function Home() {
         {/* Panel 4 — Experience */}
         <section id="experience" className="panel panel-left spotlight">
           <div className="panel-inner">
-            <PanelImage
-              src="https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1200&q=80"
-              alt="Moody city road for the experience panel"
-              className="span-5"
-            />
             <motion.div
-              className="content span-5"
+              className="content max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -936,7 +949,6 @@ export default function Home() {
                   <p className="text-sm font-semibold opacity-90 mb-1">
                     {exp.company} · {exp.dates}
                   </p>
-                  <p className="text-sm opacity-75 mb-3">{exp.location}</p>
                   <ul className="space-y-2">
                     {exp.bullets.map((bullet) => (
                       <li key={bullet} className="text-sm opacity-85">
@@ -948,6 +960,10 @@ export default function Home() {
               ))}
             </motion.div>
           </div>
+          <BackButton
+            onClick={() => scrollToPanel("skills")}
+            label="Back to Skills panel"
+          />
           <NextButton
             onClick={() => scrollToPanel("projects")}
             label="Scroll to Projects panel"
@@ -966,8 +982,8 @@ export default function Home() {
             >
               <h2 className="heading-2 major">Projects</h2>
               <p>
-                Selected builds across marketplaces, content platforms, local
-                AI tooling, and automation workflows.
+                Selected builds across marketplaces, content platforms, local AI
+                tooling, and automation workflows.
               </p>
             </motion.div>
             <motion.div
@@ -984,6 +1000,10 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+          <BackButton
+            onClick={() => scrollToPanel("experience")}
+            label="Back to Experience panel"
+          />
           <NextButton
             onClick={() => scrollToPanel("contact")}
             label="Scroll to Contact panel"
@@ -1089,41 +1109,17 @@ export default function Home() {
                   value="giannisCKS.github.io"
                   external
                 />
-                <ContactRow
-                  href="#contact"
-                  icon={LocationIcon}
-                  iconClass="contact-icon-cream"
-                  label="Location"
-                  value="Ioannina, Greece"
-                />
               </div>
             </motion.div>
           </div>
-          <NextButton
-            onClick={() => scrollToPanel("footer")}
-            label="Scroll to footer"
-          />
-        </section>
-
-        {/* Panel 7 — Footer */}
-        <section id="footer" className="panel">
-          <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <p className="text-sm opacity-75">
-                © {new Date().getFullYear()} Ioannis Papakostas. Built with
-                Next.js & Tailwind CSS.
-              </p>
-            </motion.div>
-          </div>
           <BackButton
-            onClick={() => scrollToPanel("contact")}
-            label="Back to Contact panel"
+            onClick={() => scrollToPanel("projects")}
+            label="Back to Projects panel"
           />
+          <p className="mt-10 text-center text-sm opacity-75">
+            © {new Date().getFullYear()} Ioannis Papakostas. Built with Next.js
+            & Tailwind CSS.
+          </p>
         </section>
       </main>
     </>
